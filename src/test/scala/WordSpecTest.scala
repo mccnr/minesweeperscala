@@ -5,28 +5,28 @@ class WordSpecTest extends AnyWordSpec {
 
   "A Cell" should {
 
-    "isMine = true when value == 1" in {
+    "Check isMine = true when value == 1" in {
       val c = Cell(1)
       c.isMine shouldBe true
     }
 
-    "isMine = false when value != 1" in {
+    "Check isMine = false when value != 1" in {
       val c = Cell(0)
       c.isMine shouldBe false
     }
 
-    "display '*' for mines" in {
+    "Display '*' for mines" in {
       Cell(1).display shouldBe "*"
     }
 
-    "display '.' for non-mines" in {
+    "Display '.' for non-mines" in {
       Cell(0).display shouldBe "."
     }
   }
 
   "A Field" should {
 
-    "render with correct structure and symbols" in {
+    "Render with correct structure and symbols" in {
       val cells = Vector(
         Vector(Cell(1), Cell(0)),
         Vector(Cell(0), Cell(1))
@@ -44,7 +44,7 @@ class WordSpecTest extends AnyWordSpec {
 
   "randomField" should {
 
-    "create a field with the correct size and valid cell values" in {
+    "Create a field with the correct size and valid cell values" in {
       val f = randomField(3, 4)
 
       f.rows shouldBe 3
