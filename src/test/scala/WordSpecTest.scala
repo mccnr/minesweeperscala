@@ -38,7 +38,37 @@ class WordSpecTest extends AnyWordSpec {
       out should include ("| * . |")
       out should include ("| . * |")
       out should startWith ("-")
-      out.trim should endWith ("-") // trim wichtig, falls newline am Ende
+      out.trim should endWith ("-")
+    }
+  }
+
+  "randomField" should {
+
+    "create a field with the correct size and valid cell values" in {
+      val f = randomField(3, 4)
+
+      f.rows shouldBe 3
+      f.cols shouldBe 4
+      f.cells.length shouldBe 3
+      f.cells.foreach(_.length shouldBe 4)
+
+      // random werte, müssen 0 oder 1 sein
+      all (f.cells.flatten.map(_.value)) should (be (0) or be (1))
+    }
+  }
+
+  "runGame" should {
+    "Check Game Outputs" in {
+      val out = runGame()
+      out should include("Minesweeper")
+      out should include("true") // weil cell1 = 1
+      out should include("false") // weil cell2 = 0
+    }
+  }
+
+  "Hello main" should {
+    "Run main" in {
+      Hello() // Der rest von main wird auch abgearbeitet für die Coverage
     }
   }
 }
