@@ -5,12 +5,12 @@ class WordSpecTest extends AnyWordSpec {
 
   "A Cell" should {
 
-    "report isMine = true when value == 1" in {
+    "isMine = true when value == 1" in {
       val c = Cell(1)
       c.isMine shouldBe true
     }
 
-    "report isMine = false when value != 1" in {
+    "isMine = false when value != 1" in {
       val c = Cell(0)
       c.isMine shouldBe false
     }
