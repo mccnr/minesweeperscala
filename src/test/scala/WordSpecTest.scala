@@ -26,7 +26,20 @@ class WordSpecTest extends AnyWordSpec {
 
   "A Field" should {
 
-    "Display correct structure and symbols" in {
+    "Display correct structure and symbols for 1x1 field" in {
+      val cells = Vector(
+        Vector(Cell(1))
+      )
+      val field = Field(1, 1, cells)
+
+      val out = field.show()
+
+      out should include("| * |")
+      out should startWith("-")
+      out.trim should endWith("-")
+    }
+
+    "Display correct structure and symbols for 2x2 field" in {
       val cells = Vector(
         Vector(Cell(1), Cell(0)),
         Vector(Cell(0), Cell(1))
@@ -35,24 +48,36 @@ class WordSpecTest extends AnyWordSpec {
 
       val out = field.show()
 
-      out should include ("| * . |")
-      out should include ("| . * |")
-      out should startWith ("-")
-      out.trim should endWith ("-")
+      out should include("| * . |")
+      out should include("| . * |")
+      out should startWith("-")
+      out.trim should endWith("-")
     }
   }
 
   "randomField" should {
 
-    "Create a field with the correct size and valid cell values" in {
-      val f = randomField(3, 4)
+    "Create a 1x1 field with valid cell values" in {
+      val f = randomField(1, 1)
 
-      f.rows shouldBe 3
-      f.cols shouldBe 4
-      f.cells.length shouldBe 3
-      f.cells.foreach(_.length shouldBe 4)
+      f.rows shouldBe 1
+      f.cols shouldBe 1
+      f.cells.length shouldBe 1
+      f.cells.foreach(_.length shouldBe 1)
 
-      // random werte, müssen 0 oder 1 sein
+      // random Wert muss 0 oder 1 sein
+      all (f.cells.flatten.map(_.value)) should (be (0) or be (1))
+    }
+
+    "Create a 2x2 field with valid cell values" in {
+      val f = randomField(2, 2)
+
+      f.rows shouldBe 2
+      f.cols shouldBe 2
+      f.cells.length shouldBe 2
+      f.cells.foreach(_.length shouldBe 2)
+
+      // random Werte müssen 0 oder 1 sein
       all (f.cells.flatten.map(_.value)) should (be (0) or be (1))
     }
   }
@@ -66,9 +91,9 @@ class WordSpecTest extends AnyWordSpec {
     }
   }
 
-  "Hello main" should {
+  "runMain" should {
     "Run main" in {
-      Hello() // Der rest von main wird abgearbeitet für die Coverage
+      runMain() // Der rest von main wird abgearbeitet für die Coverage
     }
   }
 }

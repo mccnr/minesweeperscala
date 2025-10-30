@@ -22,9 +22,9 @@ def runGame(): String =
   val cell2 = Cell(0)
   println(s"cell2 ist eine Mine? ${cell2.isMine}")
 
-  val field = randomField(2, 2)
+  val field = randomField(3, 3)
   s"Minesweeper\n${cell1.isMine}\n${cell2.isMine}\n${field.show()}"
 
 // main
-@main def Hello(): Unit =
+@main def runMain(): Unit =
   println(runGame())
