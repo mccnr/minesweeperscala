@@ -1,3 +1,5 @@
+import scala.util.Random
+
 case class Cell(value: Int):
   def isMine: Boolean = value == 1
   def display: String = if isMine then "*" else "."
@@ -7,8 +9,6 @@ case class Field(rows: Int, cols: Int, cells: Vector[Vector[Cell]]):
     val border = "-" * (cols * 2 + 3)
     val body = cells.map(row => "| " + row.map(_.display).mkString(" ") + " |").mkString("\n")
     s"$border\n$body\n$border"
-
-import scala.util.Random
 
 def randomField(rows: Int, cols: Int): Field =
   val generated = Vector.fill(rows, cols)(Cell(Random.nextInt(2)))
@@ -22,10 +22,9 @@ def runGame(): String =
   val cell2 = Cell(0)
   println(s"cell2 ist eine Mine? ${cell2.isMine}")
 
-  val field = randomField(3, 3)
+  val field = randomField(2, 2)
   s"Minesweeper\n${cell1.isMine}\n${cell2.isMine}\n${field.show()}"
 
 // main
-
 @main def Hello(): Unit =
   println(runGame())

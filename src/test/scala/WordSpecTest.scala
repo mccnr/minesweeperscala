@@ -5,12 +5,12 @@ class WordSpecTest extends AnyWordSpec {
 
   "A Cell" should {
 
-    "Check isMine = true when value == 1" in {
+    "Check if isMine = true when value == 1" in {
       val c = Cell(1)
       c.isMine shouldBe true
     }
 
-    "Check isMine = false when value != 1" in {
+    "Check if isMine = false when value != 1" in {
       val c = Cell(0)
       c.isMine shouldBe false
     }
@@ -26,7 +26,7 @@ class WordSpecTest extends AnyWordSpec {
 
   "A Field" should {
 
-    "Render with correct structure and symbols" in {
+    "Display correct structure and symbols" in {
       val cells = Vector(
         Vector(Cell(1), Cell(0)),
         Vector(Cell(0), Cell(1))
@@ -68,7 +68,7 @@ class WordSpecTest extends AnyWordSpec {
 
   "Hello main" should {
     "Run main" in {
-      Hello() // Der rest von main wird auch abgearbeitet für die Coverage
+      Hello() // Der rest von main wird abgearbeitet für die Coverage
     }
   }
 }
