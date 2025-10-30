@@ -39,17 +39,30 @@ class WordSpecTest extends AnyWordSpec {
       out.trim should endWith("-")
     }
 
-    "Display correct structure and symbols for 2x2 field" in {
+    "Display correct structure and symbols for 1x2 field" in {
       val cells = Vector(
-        Vector(Cell(1), Cell(0)),
-        Vector(Cell(0), Cell(1))
+        Vector(Cell(1), Cell(0))
       )
-      val field = Field(2, 2, cells)
+      val field = Field(1, 2, cells)
 
       val out = field.show()
 
       out should include("| * . |")
-      out should include("| . * |")
+      out should startWith("-")
+      out.trim should endWith("-")
+    }
+
+    "Display correct structure and symbols for 2x1 field" in {
+      val cells = Vector(
+        Vector(Cell(1)),
+        Vector(Cell(0))
+      )
+      val field = Field(2, 1, cells)
+
+      val out = field.show()
+
+      out should include("| * |")
+      out should include("| . |")
       out should startWith("-")
       out.trim should endWith("-")
     }
@@ -57,7 +70,7 @@ class WordSpecTest extends AnyWordSpec {
 
   "randomField" should {
 
-    "Create a 1x1 field with valid cell values" in {
+    "Create a 1x1 field with valid cell value" in {
       val f = randomField(1, 1)
 
       f.rows shouldBe 1
@@ -66,19 +79,31 @@ class WordSpecTest extends AnyWordSpec {
       f.cells.foreach(_.length shouldBe 1)
 
       // random Wert muss 0 oder 1 sein
-      all (f.cells.flatten.map(_.value)) should (be (0) or be (1))
+      all(f.cells.flatten.map(_.value)) should (be(0) or be(1))
     }
 
-    "Create a 2x2 field with valid cell values" in {
-      val f = randomField(2, 2)
+    "Create a 1x2 field with valid cell values" in {
+      val f = randomField(1, 2)
 
-      f.rows shouldBe 2
+      f.rows shouldBe 1
       f.cols shouldBe 2
-      f.cells.length shouldBe 2
+      f.cells.length shouldBe 1
       f.cells.foreach(_.length shouldBe 2)
 
       // random Werte müssen 0 oder 1 sein
-      all (f.cells.flatten.map(_.value)) should (be (0) or be (1))
+      all(f.cells.flatten.map(_.value)) should (be(0) or be(1))
+    }
+
+    "Create a 2x1 field with valid cell values" in {
+      val f = randomField(2, 1)
+
+      f.rows shouldBe 2
+      f.cols shouldBe 1
+      f.cells.length shouldBe 2
+      f.cells.foreach(_.length shouldBe 1)
+
+      // random Werte müssen 0 oder 1 sein
+      all(f.cells.flatten.map(_.value)) should (be(0) or be(1))
     }
   }
 
