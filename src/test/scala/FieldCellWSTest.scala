@@ -1,7 +1,7 @@
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
 
-class FieldCellWordSpecTest extends AnyWordSpec {
+class FieldCellWSTest extends AnyWordSpec {
 
   "A Cell" should {
 
