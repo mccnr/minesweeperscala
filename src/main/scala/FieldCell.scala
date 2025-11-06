@@ -8,10 +8,10 @@ case class Cell(value: Int, revealed: Boolean = false):
     else if minesAround.contains(0) then " "     // keine Minen um sich, d.h. leer
     else minesAround.map(_.toString).getOrElse("?") // Zahl anzeigen
 
-// // Feld aus mehreren Zeilen und Spalten
+// Feld aus mehreren Zeilen und Spalten
 case class Field(rows: Int, cols: Int, cells: Vector[Vector[Cell]]):
 
-  // Zähle Minen in der Umgebung einer Zelle mithilfe Iteration
+  // Zähle Minen in der Umgebung einer Zelle
   def countMinesAround(r: Int, c: Int): Int =
     val neighbors = for
       dr <- -1 to 1
