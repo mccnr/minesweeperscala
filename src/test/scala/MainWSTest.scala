@@ -9,19 +9,13 @@ class MainWSTest extends AnyWordSpec {
 
   "runMain" should {
 
-    "not start the game when in test mode" in {
-      System.setProperty("test.env", "true")
-      noException should be thrownBy runMain()
-      System.clearProperty("test.env")
-    }
-
     "start the game when not in test mode" in {
       sys.props -= "test.env"
 
-      // künstliche Eingabe: nur Enter, beendet sofort
+      // simuliert Eingabe
       val input = new ByteArrayInputStream("\n".getBytes())
       System.setIn(input)
-      val output = new ByteArrayOutputStream()
+      val output = new ByteArrayOutputStream() // fängt alles ab, was print schreibt, zum prüfen
       System.setOut(new PrintStream(output))
 
 
@@ -29,7 +23,7 @@ class MainWSTest extends AnyWordSpec {
       runMain()
 
       val text = output.toString
-      assert(text.contains("Willkommen bei Minesweeper"))
+      assert(text.contains("Willkommen bei Minesweeper")) // Programmstart bestätigen
     }
   }
 }

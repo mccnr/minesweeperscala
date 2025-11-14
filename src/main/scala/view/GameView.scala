@@ -1,8 +1,10 @@
 package view
 
+import controller.ControllerResult.{GameOver, OutOfBounds, Revealed, Win}
 import controller.GameController
 import util.Observer
-import java.io._
+
+import java.io.*
 
 class GameView(
   controller: GameController,
@@ -19,7 +21,6 @@ class GameView(
     out.println("Willkommen bei Minesweeper")
     out.println(controller.field.show())
 
-    // Nur interaktiv, wenn nicht im Testmodus
     val interactive = !sys.props.contains("test.env")
 
     while controller.playing && interactive do
@@ -30,7 +31,21 @@ class GameView(
         controller.playing = false
       else
         val parts = line.split(" ")
-        if parts.length == 2 && parts(0).matches("\\d+") && parts(1).matches("\\d+") then
-          controller.processMove(parts(0).toInt - 1, parts(1).toInt - 1)
-        else
+        if parts.length != 2 || !parts(0).matches("\\d+") || !parts(1).matches("\\d+") then
           out.println("Bitte zwei Zahlen eingeben, z. B. 2 3.")
+        else
+          val r = parts(0).toInt - 1
+          val c = parts(1).toInt - 1
+
+          controller.processMove(r, c) match
+            case Revealed =>
+             out.println("Erfolgreich aufgedeckt.")
+
+            case OutOfBounds =>
+              out.println("Koordinate ist außerhalb des Felds.")
+
+            case GameOver =>
+              out.println("Game Over.")
+
+            case Win =>
+              out.println("Glückwunsch, du hast alle Minen gefunden!")

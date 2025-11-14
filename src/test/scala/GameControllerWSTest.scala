@@ -8,11 +8,18 @@ class GameControllerWSTest extends AnyWordSpec {
 
   "A GameController" should {
 
-    "update the field when a valid move is made" in {
-      val field = Field(3, 3, Vector.fill(3, 3)(Cell(0, false)))
+    "update the field when a move is made" in {
+      val field = Field(3, 3, Vector(
+        Vector(Cell(0), Cell(0), Cell(0)),
+        Vector(Cell(0), Cell(0), Cell(0)),
+        Vector(Cell(0), Cell(0), Cell(1))
+      ))
+
       val controller = new GameController(field)
 
-      controller.processMove(1, 1)
+      val result = controller.processMove(1, 1)
+
+      result shouldBe ControllerResult.Revealed
       controller.field.cells(1)(1).revealed shouldBe true
     }
 
@@ -23,20 +30,20 @@ class GameControllerWSTest extends AnyWordSpec {
       )
       val controller = new GameController(Field(2, 2, cells))
 
-      controller.processMove(0, 0)
+      val result = controller.processMove(0, 0)
+
+      result shouldBe ControllerResult.GameOver
       controller.playing shouldBe false
     }
 
-    "print error for out of bounds coordinates" in {
+    "return OutOfBounds when coordinates are invalid" in {
       val field = Field(3, 3, Vector.fill(3, 3)(Cell(0, false)))
       val controller = new GameController(field)
 
-      val out = new java.io.ByteArrayOutputStream()
-      Console.withOut(new java.io.PrintStream(out)) {
-        controller.processMove(5, 5)
-      }
+      val result = controller.processMove(5, 5)
 
-      out.toString should include("Koordinate ist außerhalb des Felds.")
+      result shouldBe ControllerResult.OutOfBounds
+      controller.playing shouldBe true
     }
   }
 }

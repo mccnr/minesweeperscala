@@ -18,7 +18,7 @@ class ObserversWSTest extends AnyWordSpec {
       observable.addObserver(observer)
       observable.notifyObservers()
 
-      assert(updated, "Observer wurde nicht benachrichtigt")
+      assert(updated) // Prüft ob geupdated wurde, also true ist
     }
 
     "remove observers" in {
@@ -34,7 +34,7 @@ class ObserversWSTest extends AnyWordSpec {
       observable.removeObserver(observer)
       observable.notifyObservers()
 
-      assert(updateCount == 0, "Observer sollte nach removeObserver() keine Updates mehr erhalten")
+      assert(updateCount == 0) // Prüft ob entfernt wurde
     }
   }
 }
