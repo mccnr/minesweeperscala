@@ -1,9 +1,8 @@
+import htwg.minesweeperse.runMain
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers.{be, noException}
-import model._
-import controller._
-import view._
-import java.io._
+
+import java.io.*
 
 class MainWSTest extends AnyWordSpec {
 

@@ -1,8 +1,8 @@
-package view
+package htwg.minesweeperse.view
 
-import controller.ControllerResult.{GameOver, OutOfBounds, Revealed, Win}
-import controller.GameController
-import util.Observer
+import htwg.minesweeperse.controller.ControllerResult.{GameOver, OutOfBounds, Revealed, Win}
+import htwg.minesweeperse.controller.GameController
+import htwg.minesweeperse.util.Observer
 
 import java.io.*
 
@@ -21,9 +21,9 @@ class GameView(
     out.println("Willkommen bei Minesweeper")
     out.println(controller.field.show())
 
-    val interactive = !sys.props.contains("test.env")
+    //val interactive = !sys.props.contains("test.env")
 
-    while controller.playing && interactive do
+    while controller.playing do //&& interactive do
       out.print("Gib eine valide Koordinate ein (Z S): ")
       val line = in.readLine()
 

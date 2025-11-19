@@ -1,7 +1,7 @@
-package controller
-
-import model._
-import util._
+package htwg.minesweeperse.controller
+import htwg.minesweeperse.model.Field
+import htwg.minesweeperse.model.Cell
+import htwg.minesweeperse.util.Observable
 
 enum ControllerResult:
   case Revealed

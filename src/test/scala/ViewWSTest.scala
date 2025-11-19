@@ -1,19 +1,19 @@
 package view
 
 import org.scalatest.wordspec.AnyWordSpec
-import model._
-import controller._
-import java.io._
-import org.scalatest.matchers.should.Matchers._
+import controller.*
+import htwg.minesweeperse.controller.GameController
+import htwg.minesweeperse.model.{Cell, Field}
+import htwg.minesweeperse.view.GameView
+
+import java.io.*
+import org.scalatest.matchers.should.Matchers.*
 
 class ViewWSTest extends AnyWordSpec {
 
   "GameView" should {
 
     "process valid numeric input" in {
-      // Testmodus temporär ausschalten
-      val hadProp = sys.props.contains("test.env")
-      if (hadProp) sys.props -= "test.env"
 
       val input = "1 1\n"
       val in = new BufferedReader(new InputStreamReader(
@@ -31,13 +31,9 @@ class ViewWSTest extends AnyWordSpec {
       assert(controller.field.cells.flatten.exists(_.revealed)) // processMove wurde ausgeführt
       assert(!text.contains("Bitte zwei Zahlen eingeben, z. B. 2 3."))
 
-      // Testmodus wiederherstellen
-      if (hadProp) System.setProperty("test.env", "true")
     }
 
     "print error for invalid input" in {
-      val hadProp = sys.props.contains("test.env")
-      if (hadProp) sys.props -= "test.env"
 
       val input = "abc def\n"
       val in = new BufferedReader(new InputStreamReader(
@@ -55,7 +51,6 @@ class ViewWSTest extends AnyWordSpec {
       assert(text.contains("Bitte zwei Zahlen eingeben, z. B. 2 3."))
       assert(!controller.field.cells.flatten.exists(_.revealed))
 
-      if (hadProp) System.setProperty("test.env", "true")
     }
 
     "update the view when controller notifies" in {
@@ -70,8 +65,6 @@ class ViewWSTest extends AnyWordSpec {
     }
 
     "print OutOfBounds when move is outside field" in {
-      val hadProp = sys.props.contains("test.env")
-      if hadProp then sys.props -= "test.env"
 
       val input = "9 9\n"
       val in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(input.getBytes())))
@@ -84,12 +77,9 @@ class ViewWSTest extends AnyWordSpec {
 
       outStream.toString should include("Koordinate ist außerhalb des Felds.")
 
-      if hadProp then System.setProperty("test.env", "true")
     }
 
     "print Game Over when a mine is revealed" in {
-      val hadProp = sys.props.contains("test.env")
-      if hadProp then sys.props -= "test.env"
 
       val cells = Vector(
         Vector(Cell(1, false), Cell(0, false)),
@@ -106,13 +96,9 @@ class ViewWSTest extends AnyWordSpec {
       view.start()
 
       outStream.toString should include("Game Over.")
-
-      if hadProp then System.setProperty("test.env", "true")
     }
 
     "print Win when all non-mine cells are revealed" in {
-      val hadProp = sys.props.contains("test.env")
-      if hadProp then sys.props -= "test.env"
 
       val cells = Vector(
         Vector(Cell(0, true), Cell(0, true)),
@@ -130,12 +116,9 @@ class ViewWSTest extends AnyWordSpec {
 
       outStream.toString should include("Glückwunsch, du hast alle Minen gefunden!")
 
-      if hadProp then System.setProperty("test.env", "true")
     }
 
     "print on successful Revealed result" in {
-      val hadProp = sys.props.contains("test.env")
-      if hadProp then sys.props -= "test.env"
 
       val cells = Vector(
         Vector(Cell(1), Cell(0), Cell(0)),
@@ -156,7 +139,6 @@ class ViewWSTest extends AnyWordSpec {
 
       outStream.toString should include("Erfolgreich aufgedeckt.")
 
-      if hadProp then System.setProperty("test.env", "true")
     }
   }
 }

@@ -1,4 +1,5 @@
-package model
+package htwg.minesweeperse.model
+
 import scala.util.Random
 
 case class Field(rows: Int, cols: Int, cells: Vector[Vector[Cell]]):

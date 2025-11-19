@@ -1,4 +1,5 @@
-package model
+package htwg.minesweeperse.model
+
 import scala.util.Random
 
 case class Cell(value: Int, revealed: Boolean = false):
