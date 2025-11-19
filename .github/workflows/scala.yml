@@ -21,7 +21,9 @@ jobs:
         java-version: 21
 
     - name: Install sbt
-      uses: sbt/setup-sbt@v1
+      uses: coursier/setup-action@v1
+      with:
+        apps: sbt
 
     - name: Compile
       run: sbt compile
