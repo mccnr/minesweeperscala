@@ -11,22 +11,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Repository auschecken
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Java
+      # Java installieren
+      - name: Set up Java 21
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 21
 
-      - name: Install sbt (via coursier)
+      # sbt installieren (coursier)
+      - name: Install sbt
         uses: coursier/setup-action@v1
         with:
           apps: sbt
 
+      # Kompilieren
       - name: Compile
         run: sbt compile
 
-      - name: Run Tests
+      # Tests ausführen
+      - name: Run tests
         run: sbt test
+
+      # Coverage + Report an Coveralls schicken
+      - name: Coverage + Send to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          sbt clean coverage test coverageReport coveralls
