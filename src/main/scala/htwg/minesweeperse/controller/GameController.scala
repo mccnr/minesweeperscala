@@ -1,6 +1,7 @@
 package htwg.minesweeperse.controller
-import htwg.minesweeperse.model.Field
-import htwg.minesweeperse.model.Cell
+
+import htwg.minesweeperse.controller.ControllerResult
+import htwg.minesweeperse.model.{Cell, Field}
 import htwg.minesweeperse.util.Observable
 
 enum ControllerResult:

@@ -1,8 +1,8 @@
-package model
+package htwg.minesweeperse.model
 
 import htwg.minesweeperse.model.{Cell, Field}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.AnyWordSpec
 
 class FieldCellWSTest extends AnyWordSpec {
 

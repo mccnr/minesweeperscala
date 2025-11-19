@@ -1,9 +1,8 @@
-package controller
+package htwg.minesweeperse.controller
 
-import htwg.minesweeperse.controller.{ControllerResult, GameController}
 import htwg.minesweeperse.model.{Cell, Field}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.AnyWordSpec
 
 class GameControllerWSTest extends AnyWordSpec {
 

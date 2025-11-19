@@ -1,13 +1,12 @@
-package view
+package htwg.minesweeperse.view
 
-import org.scalatest.wordspec.AnyWordSpec
-import controller.*
 import htwg.minesweeperse.controller.GameController
 import htwg.minesweeperse.model.{Cell, Field}
 import htwg.minesweeperse.view.GameView
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.AnyWordSpec
 
 import java.io.*
-import org.scalatest.matchers.should.Matchers.*
 
 class ViewWSTest extends AnyWordSpec {
 

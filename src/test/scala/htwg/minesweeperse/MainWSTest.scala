@@ -1,6 +1,8 @@
+package htwg.minesweeperse
+
 import htwg.minesweeperse.runMain
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers.{be, noException}
+import org.scalatest.wordspec.AnyWordSpec
 
 import java.io.*
 
