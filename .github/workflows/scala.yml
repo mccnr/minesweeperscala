@@ -11,20 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Set up JDK 21
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         distribution: temurin
         java-version: 21
+        cache: sbt   # <- GitHub cached automatisch, kein eigener Cache nötig!
 
-    - name: Install sbt
-      uses: sbt/setup-sbt@v1
-
-    - name: Compile
-      run: sbt compile
-
-    - name: Run Tests
+    - name: Run tests
       run: sbt test
+
+    - name: Run coverage
+      run: sbt coverage test coverageReport
