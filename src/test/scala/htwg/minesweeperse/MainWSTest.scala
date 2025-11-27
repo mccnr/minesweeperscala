@@ -1,6 +1,6 @@
 package htwg.minesweeperse
 
-import htwg.minesweeperse.runMain
+import htwg.minesweeperse._
 import org.scalatest.matchers.must.Matchers.{be, noException}
 import org.scalatest.wordspec.AnyWordSpec
 

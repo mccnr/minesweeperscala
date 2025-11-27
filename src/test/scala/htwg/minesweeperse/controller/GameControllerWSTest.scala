@@ -1,8 +1,11 @@
 package htwg.minesweeperse.controller
 
-import htwg.minesweeperse.model.{Cell, Field}
-import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers.*
+import htwg.minesweeperse.model.*
+import htwg.minesweeperse.util.strategy.StandardRevealStrategy
+import htwg.minesweeperse.controller.{GameController, ControllerResult}
+import ControllerResult.*
 
 class GameControllerWSTest extends AnyWordSpec {
 
@@ -15,11 +18,11 @@ class GameControllerWSTest extends AnyWordSpec {
         Vector(Cell(0), Cell(0), Cell(1))
       ))
 
-      val controller = new GameController(field)
+      val controller = new GameController(field, StandardRevealStrategy())
 
-      val result = controller.processMove(1, 1)
+      controller.processMove(1, 1)
 
-      result shouldBe ControllerResult.Revealed
+      controller.lastResult shouldBe Revealed
       controller.field.cells(1)(1).revealed shouldBe true
     }
 
@@ -28,21 +31,21 @@ class GameControllerWSTest extends AnyWordSpec {
         Vector(Cell(1, false), Cell(0, false)),
         Vector(Cell(0, false), Cell(0, false))
       )
-      val controller = new GameController(Field(2, 2, cells))
+      val controller = new GameController(Field(2, 2, cells), StandardRevealStrategy())
 
-      val result = controller.processMove(0, 0)
+      controller.processMove(0, 0)
 
-      result shouldBe ControllerResult.GameOver
+      controller.lastResult shouldBe GameOver
       controller.playing shouldBe false
     }
 
     "return OutOfBounds when coordinates are invalid" in {
       val field = Field(3, 3, Vector.fill(3, 3)(Cell(0, false)))
-      val controller = new GameController(field)
+      val controller = new GameController(field, StandardRevealStrategy())
 
-      val result = controller.processMove(5, 5)
+      controller.processMove(5, 5)
 
-      result shouldBe ControllerResult.OutOfBounds
+      controller.lastResult shouldBe OutOfBounds
       controller.playing shouldBe true
     }
   }

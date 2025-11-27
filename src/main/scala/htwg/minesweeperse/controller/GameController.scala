@@ -1,36 +1,24 @@
 package htwg.minesweeperse.controller
 
-import htwg.minesweeperse.controller.ControllerResult
-import htwg.minesweeperse.model.{Cell, Field}
+import htwg.minesweeperse.model._
 import htwg.minesweeperse.util.Observable
+import htwg.minesweeperse.util.state._
+import htwg.minesweeperse.util.strategy._
+import ControllerResult._
 
-enum ControllerResult:
-  case Revealed
-  case Win
-  case GameOver
-  case OutOfBounds
+class GameController(
+                      var field: Field,
+                      var revealStrategy: RevealStrategy
+                    ) extends Observable:
 
-class GameController(var field: Field) extends Observable:
-  var playing = true
+  var playing: Boolean = true
+  var lastResult: ControllerResult = Revealed
+
+  var state: GameState = PlayingState()
+
+  def changeState(newState: GameState): Unit =
+    this.state = newState
 
   def processMove(r: Int, c: Int): ControllerResult =
-    // ungültige Koordinaten
-    if r < 0 || r >= field.rows || c < 0 || c >= field.cols then
-      return ControllerResult.OutOfBounds
-
-    // Zelle aufdecken
-    field = field.reveal(r, c)
-    notifyObservers()
-
-    // Siegesbedingung
-    if field.isWin then
-      playing = false
-      return ControllerResult.Win
-
-    // Mine getroffen?
-    if field.cells.flatten.exists(c => c.isMine && c.revealed) then
-      playing = false
-      return ControllerResult.GameOver
-
-    // Erfolgreicher Zug
-    ControllerResult.Revealed
+    state.processMove(r, c, this)
+    lastResult

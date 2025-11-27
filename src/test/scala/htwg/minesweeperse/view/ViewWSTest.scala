@@ -2,6 +2,7 @@ package htwg.minesweeperse.view
 
 import htwg.minesweeperse.controller.GameController
 import htwg.minesweeperse.model.{Cell, Field}
+import htwg.minesweeperse.util.strategy.StandardRevealStrategy
 import htwg.minesweeperse.view.GameView
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
@@ -21,9 +22,9 @@ class ViewWSTest extends AnyWordSpec {
       val output = new ByteArrayOutputStream()
       val out = new PrintStream(output)
 
-      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))))
+      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))), StandardRevealStrategy())
       val view = new GameView(controller, out, in)
-      view.start()
+      view.startGameLoop()
 
       val text = output.toString
       assert(text.contains("Willkommen bei Minesweeper"))
@@ -41,9 +42,9 @@ class ViewWSTest extends AnyWordSpec {
       val output = new ByteArrayOutputStream()
       val out = new PrintStream(output)
 
-      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))))
+      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))), StandardRevealStrategy())
       val view = new GameView(controller, out, in)
-      view.start()
+      view.startGameLoop()
 
       val text = output.toString
       assert(text.contains("Willkommen bei Minesweeper"))
@@ -56,7 +57,7 @@ class ViewWSTest extends AnyWordSpec {
       val output = new ByteArrayOutputStream()
       val out = new PrintStream(output)
 
-      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))))
+      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))), StandardRevealStrategy())
       val view = new GameView(controller, out)
 
       controller.processMove(0, 0) // ruft notifyObservers()
@@ -70,9 +71,9 @@ class ViewWSTest extends AnyWordSpec {
       val outStream = new ByteArrayOutputStream()
       val out = new PrintStream(outStream)
 
-      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))))
+      val controller = new GameController(Field(2, 2, Vector.fill(2, 2)(Cell(0))), StandardRevealStrategy())
       val view = new GameView(controller, out, in)
-      view.start()
+      view.startGameLoop()
 
       outStream.toString should include("Koordinate ist außerhalb des Felds.")
 
@@ -90,9 +91,9 @@ class ViewWSTest extends AnyWordSpec {
       val outStream = new ByteArrayOutputStream()
       val out = new PrintStream(outStream)
 
-      val controller = new GameController(Field(2, 2, cells))
+      val controller = new GameController(Field(2, 2, cells), StandardRevealStrategy())
       val view = new GameView(controller, out, in)
-      view.start()
+      view.startGameLoop()
 
       outStream.toString should include("Game Over.")
     }
@@ -109,9 +110,9 @@ class ViewWSTest extends AnyWordSpec {
       val outStream = new ByteArrayOutputStream()
       val out = new PrintStream(outStream)
 
-      val controller = new GameController(Field(2, 2, cells))
+      val controller = new GameController(Field(2, 2, cells), StandardRevealStrategy())
       val view = new GameView(controller, out, in)
-      view.start()
+      view.startGameLoop()
 
       outStream.toString should include("Glückwunsch, du hast alle Minen gefunden!")
 
@@ -132,9 +133,9 @@ class ViewWSTest extends AnyWordSpec {
       val outStream = new ByteArrayOutputStream()
       val out = new PrintStream(outStream)
 
-      val controller = new GameController(Field(3, 3, cells))
+      val controller = new GameController(Field(3, 3, cells), StandardRevealStrategy())
       val view = new GameView(controller, out, in)
-      view.start()
+      view.startGameLoop()
 
       outStream.toString should include("Erfolgreich aufgedeckt.")
 
