@@ -9,10 +9,10 @@ import htwg.minesweeperse.controller.ControllerResult
 import java.io.*
 
 class GameView(
-                controller: GameController,
-                out: PrintStream = System.out,
-                in: BufferedReader = new BufferedReader(new InputStreamReader(System.in))
-              ) extends BaseView(controller), Observer:
+   controller: GameController,
+   out: PrintStream = System.out,
+   in: BufferedReader = new BufferedReader(new InputStreamReader(System.in))
+   ) extends BaseView(controller), Observer:
 
   controller.addObserver(this)
 

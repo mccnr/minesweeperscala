@@ -2,7 +2,7 @@ package htwg.minesweeperse.util.state
 
 import htwg.minesweeperse.model.Field
 import htwg.minesweeperse.controller.{GameController, ControllerResult}
-import ControllerResult.*
+import ControllerResult._
 
 class PlayingState extends GameState:
 
@@ -26,7 +26,7 @@ class PlayingState extends GameState:
     if newField.cells.flatten.exists(c => c.isMine && c.revealed) then
       controller.lastResult = GameOver
       controller.changeState(new GameOverState)
-      controller.state.processMove(r, c, controller)
+      controller.state.processMove(r, c, controller) // logik des aktuellen states zu ende verarbeiten
       return
 
     // Win?

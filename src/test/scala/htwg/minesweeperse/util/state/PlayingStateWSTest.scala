@@ -63,7 +63,7 @@ class PlayingStateWSTest extends AnyWordSpec {
       val controller = new GameController(field, StandardRevealStrategy())
       val state = PlayingState()
 
-      // reveal the only non mine
+      // feld ohne mine revealen
       state.processMove(0, 0, controller)
 
       controller.lastResult shouldBe ControllerResult.Win

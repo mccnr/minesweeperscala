@@ -1,7 +1,7 @@
 package htwg.minesweeperse.util.state
 
 import htwg.minesweeperse.controller.{GameController, ControllerResult}
-import ControllerResult.*
+import ControllerResult._
 
 class GameOverState extends GameState:
   override def name: String = "GameOver"

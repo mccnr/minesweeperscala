@@ -7,9 +7,9 @@ import htwg.minesweeperse.util.strategy._
 import ControllerResult._
 
 class GameController(
-                      var field: Field,
-                      var revealStrategy: RevealStrategy
-                    ) extends Observable:
+  var field: Field,
+  var revealStrategy: RevealStrategy
+  ) extends Observable:
 
   var playing: Boolean = true
   var lastResult: ControllerResult = Revealed
@@ -20,5 +20,5 @@ class GameController(
     this.state = newState
 
   def processMove(r: Int, c: Int): ControllerResult =
-    state.processMove(r, c, this)
+    state.processMove(r, c, this) // übergibt an aktuellen Zustand
     lastResult
