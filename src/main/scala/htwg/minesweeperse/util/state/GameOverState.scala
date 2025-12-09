@@ -8,4 +8,4 @@ class GameOverState extends GameState:
 
   override def processMove(r: Int, c: Int, controller: GameController): Unit =
     controller.lastResult = GameOver
-    controller.playing = false;
+    //controller.playing = false;

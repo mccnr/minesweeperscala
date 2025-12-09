@@ -5,6 +5,7 @@ import htwg.minesweeperse.controller.GameController
 import htwg.minesweeperse.util.Observer
 import htwg.minesweeperse.util.template.BaseView
 import htwg.minesweeperse.controller.ControllerResult
+import htwg.minesweeperse.controller._
 
 import java.io.*
 
@@ -28,14 +29,31 @@ class GameView(
   override def readInput(): String =
     out.print("Gib eine valide Koordinate ein (Z S): ")
     val line = in.readLine()
-    if line == null then "" else line.trim
+    if line == null then "" else line.trim // hier try-monad?
 
-  override def parseInput(s: String): Option[(Int, Int)] =
-    val parts = s.trim.split(" ")
-    if parts.length != 2 || !parts(0).matches("\\d+") || !parts(1).matches("\\d+") then
-      None
-    else
-      Some((parts(0).toInt - 1, parts(1).toInt - 1))
+  /* override def parseInput(s: String): InputCommand =
+    s.trim.toLowerCase match
+      case "undo" => UndoCmd
+      case "redo" => RedoCmd
+      case other => // hier case some?
+        val parts = other.split(" ")
+        if parts.length != 2 then return InvalidCmd
+        if !parts(0).matches("\\d+") || !parts(1).matches("\\d+") then
+          return InvalidCmd
+        Move(parts(0).toInt - 1, parts(1).toInt - 1) */
+
+  override def parseInput(s: String): Option[InputCommand] =
+    s.trim.toLowerCase match
+      case "undo" => Some(UndoCmd)
+      case "redo" => Some(RedoCmd)
+      case str =>
+        val parts = str.split(" ")
+        if parts.length != 2 then None
+        else
+          for
+            r <- parts(0).toIntOption
+            c <- parts(1).toIntOption
+          yield Move(r - 1, c - 1)
 
   override def handleInvalidInput(s: String): Unit =
     out.println("Bitte zwei Zahlen eingeben, z. B. 2 3.")

@@ -8,4 +8,4 @@ class   WinState extends GameState:
 
   override def processMove(r: Int, c: Int, controller: GameController): Unit =
     controller.lastResult = Win
-    controller.playing = false
+    //controller.playing = false

@@ -45,5 +45,20 @@ class NoFloodRevealStrategyWSTest extends AnyWordSpec {
       newField.cells(1)(0).revealed shouldBe false
       newField.cells(1)(1).revealed shouldBe false
     }
+
+    "return the unchanged field when coordinates are out of bounds" in {
+      val field = Field(2, 2, Vector(
+        Vector(Cell(0), Cell(0)),
+        Vector(Cell(0), Cell(0))
+      ))
+
+      val strat = NoFloodRevealStrategy()
+
+      // Out Of Bounds Koordinaten: r = 5, c = 5
+      val result = strat.reveal(field, 5, 5)
+
+      // Exakt dasselbe Field zurückgeben, da es invalide Koordinaten sind
+      result shouldBe field
+    }
   }
 }

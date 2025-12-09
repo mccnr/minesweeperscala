@@ -6,8 +6,13 @@ import htwg.minesweeperse.model.*
 import htwg.minesweeperse.util.strategy.StandardRevealStrategy
 import htwg.minesweeperse.controller.{GameController, ControllerResult}
 import ControllerResult.*
+import htwg.minesweeperse.util.strategy.RevealStrategy
 
 class GameControllerWSTest extends AnyWordSpec {
+
+  class ThrowingStrategy extends RevealStrategy:
+    override def reveal(field: Field, r: Int, c: Int): Field =
+      throw new IndexOutOfBoundsException("index out of bounds")
 
   "A GameController" should {
 
@@ -36,7 +41,7 @@ class GameControllerWSTest extends AnyWordSpec {
       controller.processMove(0, 0)
 
       controller.lastResult shouldBe GameOver
-      controller.playing shouldBe false
+      //controller.playing shouldBe false
     }
 
     "return OutOfBounds when coordinates are invalid" in {
@@ -47,6 +52,17 @@ class GameControllerWSTest extends AnyWordSpec {
 
       controller.lastResult shouldBe OutOfBounds
       controller.playing shouldBe true
+    }
+    "set lastResult to OutOfBounds when try fails" in {
+      // Spielfeld
+      val field = Field(2, 2, Vector.fill(2)(Vector.fill(2)(Cell(0))))
+      val controller = new GameController(field, new ThrowingStrategy())
+
+      // Out of Bounds
+      val result = controller.processMove(99, 99)
+
+      result shouldBe ControllerResult.OutOfBounds
+      controller.lastResult shouldBe ControllerResult.OutOfBounds
     }
   }
 }

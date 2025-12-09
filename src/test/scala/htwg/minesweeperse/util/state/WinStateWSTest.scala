@@ -29,7 +29,7 @@ class WinStateWSTest extends AnyWordSpec {
       state.processMove(0, 0, controller)
 
       controller.lastResult shouldBe ControllerResult.Win
-      controller.playing shouldBe false
+      //controller.playing shouldBe false
     }
   }
 }

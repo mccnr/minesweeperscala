@@ -6,7 +6,7 @@ import htwg.minesweeperse.view.GameView
 import htwg.minesweeperse.util.strategy._
 
 @main def runMain(): Unit =
-    val field = Field.random(6, 6)
+    val field = Field.random(5, 5)
     val controller = new GameController(field, StandardRevealStrategy())
     val view = new GameView(controller)
     view.startGameLoop()

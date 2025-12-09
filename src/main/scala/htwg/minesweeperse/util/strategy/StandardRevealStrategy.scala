@@ -5,4 +5,8 @@ import htwg.minesweeperse.util.strategy.RevealStrategy
 
 class StandardRevealStrategy extends RevealStrategy:
   override def reveal(field: Field, r: Int, c: Int): Field =
-    field.reveal(r, c)
+    
+    if r < 0 || r >= field.rows || c < 0 || c >= field.cols then
+      field
+    else
+      field.reveal(r, c)
