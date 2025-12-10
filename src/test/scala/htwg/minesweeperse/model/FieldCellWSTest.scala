@@ -90,5 +90,39 @@ class FieldCellWSTest extends AnyWordSpec {
       // Es sollte genau dasselbe Objekt zurückgegeben werden:
       assert(result eq field)
     }
+    "create a field with all mines when mineChance = 1.0" in {
+      val f = Field.random(3, 3, mineChance = 1.0)
+
+      // Jede Zelle muss eine Mine sein
+      f.cells.flatten.forall(_.isMine) shouldBe true
+    }
+
+    "create a field with no mines when mineChance = 0.0" in {
+      val f = Field.random(3, 3, mineChance = 0.0)
+
+      // Keine einzige Mine
+      f.cells.flatten.exists(_.isMine) shouldBe false
+    }
+
+    "statistically create a mix of mines when mineChance = 0.5" in {
+      val f = Field.random(10, 10, mineChance = 0.5)
+
+      val mines = f.cells.flatten.count(_.isMine)
+
+      // Sollte weder 0 noch 100 Minen sein
+      mines should be > 0
+      mines should be < 100
+    }
+
+    "use the default mineChance (0.2) when not provided" in {
+      val f = Field.random(5, 5) // ← nutzt 0.2
+
+      // Wir prüfen nur, dass das Feld erzeugt wurde
+      f.rows shouldBe 5
+      f.cols shouldBe 5
+
+      f.cells.flatten.size shouldBe 25
+    }
+
   }
 }

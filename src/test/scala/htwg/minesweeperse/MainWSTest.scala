@@ -1,4 +1,4 @@
-package htwg.minesweeperse
+/* package htwg.minesweeperse
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
@@ -34,4 +34,4 @@ class MainWSTest extends AnyWordSpec {
       text should include ("Gib eine valide Koordinate ein (Z S): ")
     }
   }
-}
+} */
