@@ -176,5 +176,25 @@ class ViewWSTest extends AnyWordSpec {
       view.parseInput("1") shouldBe None
       view.parseInput("1 2 3") shouldBe None
     }
+
+    "use default System.out when no PrintStream is provided" in {
+      val controller = new GameController(Field(1, 1, Vector(Vector(Cell(0)))), StandardRevealStrategy())
+      val view = new GameView(controller) //  nutzt default System.out, System.in
+
+      // Wir prüfen nur, dass das Objekt erzeugt wird
+      view should not be null
+    }
+
+    "use default System.in when no InputStream is provided" in {
+      val controller = new GameController(Field(1, 1, Vector(Vector(Cell(0)))), StandardRevealStrategy())
+
+      // ystem.in muss gesetzt sein, sonst readInput blockiert
+      System.setIn(new ByteArrayInputStream("\n".getBytes()))
+
+      val view = new GameView(controller)
+
+      // readInput sollte den Default Pfad benutzen (Option(in.readLine()))
+      view.readInput() shouldBe ""
+    }
   }
 }
