@@ -31,7 +31,7 @@ class MainWSTest extends AnyWordSpec {
 
       // Erwartungen
       text should include ("Willkommen bei Minesweeper")
-      text should include ("Gib eine valide Koordinate ein")
+      text should include ("Gib eine valide Koordinate ein (Z S): ")
     }
   }
 }
