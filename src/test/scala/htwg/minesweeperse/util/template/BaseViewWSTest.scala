@@ -132,9 +132,13 @@ class BaseViewWSTest extends AnyWordSpec {
       controller.field.cells(0)(0).revealed shouldBe true
     }
 
-    "handle invalid input via BaseView when parseInput returns None" in {
+    "handle InvalidCmd explicitly" in {
       val controller = dummyController()
-      val view = MockView(controller, List("xyz", ""))
+
+      val view = new MockView(controller, List("bad", "")) {
+        override def parseInput(s: String): Option[InputCommand] =
+          Some(InvalidCmd)
+      }
 
       view.start()
       Thread.sleep(50)

@@ -1,30 +1,37 @@
 package htwg.minesweeperse
 
-import htwg.minesweeperse._
-import org.scalatest.matchers.must.Matchers.{be, noException}
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers._
 
-import java.io.*
+import java.io._
 
 class MainWSTest extends AnyWordSpec {
 
   "runMain" should {
 
-    "start the game when not in test mode" in {
-      sys.props -= "test.env"
+    "start only TUI when in test mode" in {
+      // GUI deaktivieren
+      sys.props("test.env") = "true"
 
-      // simuliert Eingabe
+      // TUI-Eingabe, sofort Beenden
       val input = new ByteArrayInputStream("\n".getBytes())
       System.setIn(input)
-      val output = new ByteArrayOutputStream() // fängt alles ab, was print schreibt, zum prüfen
+
+      // Ausgabe abfangen
+      val output = new ByteArrayOutputStream()
       System.setOut(new PrintStream(output))
 
-
-      // Spiel starten
+      // Hauptprogramm starten
       runMain()
 
+      // kleine Pause, damit der TUI-Thread starten kann
+      Thread.sleep(100)
+
       val text = output.toString
-      assert(text.contains("Willkommen bei Minesweeper")) // Programmstart bestätigen
+
+      // Erwartungen
+      text should include ("Willkommen bei Minesweeper")
+      text should include ("Gib eine valide Koordinate ein")
     }
   }
 }
