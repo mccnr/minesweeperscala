@@ -11,7 +11,7 @@ class MainWSTest extends AnyWordSpec {
 
     "start only TUI when in test mode" in {
       // GUI deaktivieren
-      sys.props("test.env") = "true"
+      //sys.props("test.env") = "true"
 
       // TUI-Eingabe, sofort Beenden
       val input = new ByteArrayInputStream("\n".getBytes())
