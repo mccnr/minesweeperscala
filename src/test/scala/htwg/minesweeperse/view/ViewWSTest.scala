@@ -10,8 +10,10 @@ import java.io._
 class ViewWSTest extends AnyWordSpec {
 
   // Hilfsfunktion für eine neue View und Controller pro Test
-  private def makeView(input: String, field: Field = Field(2,2,Vector.fill(2)(Vector.fill(2)(Cell(0))))):
-  (GameView, GameController, ByteArrayOutputStream) =
+  private def makeView(
+                        input: String,
+                        field: Field = Field(2,2,Vector.fill(2)(Vector.fill(2)(Cell(0))))
+                      ): (GameView, GameController, ByteArrayOutputStream) =
 
     val in  = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(input.getBytes())))
     val outBytes = new ByteArrayOutputStream()
@@ -28,39 +30,53 @@ class ViewWSTest extends AnyWordSpec {
       val (view, controller, bytes) =
         makeView("1 1\n")
 
-      view.startGameLoop()
+      val raw = view.readInput()
+      val parsed = view.parseInput(raw)
+      parsed match
+        case Some(Move(r, c)) =>
+          val res = controller.processMove(r, c)
+          view.handleResult(res)
+        case _ => fail("Expected a valid Move")
 
-      val text = bytes.toString
-      text should include ("Willkommen bei Minesweeper")
+      bytes.toString should not include ("Willkommen bei Minesweeper") // not printed automatically
       controller.field.cells.flatten.exists(_.revealed) shouldBe true
-      text should not include "Bitte zwei Zahlen eingeben"
     }
 
     "print error for invalid input" in {
       val (view, controller, bytes) =
         makeView("abc def\n")
 
-      view.startGameLoop()
+      val raw = view.readInput()
+      view.parseInput(raw) match
+        case None => view.handleInvalidInput(raw)
+        case _ => fail("Should be invalid")
 
-      val text = bytes.toString
-      text should include ("Bitte zwei Zahlen eingeben")
+      bytes.toString should include ("Bitte zwei Zahlen eingeben")
       controller.field.cells.flatten.exists(_.revealed) shouldBe false
     }
 
     "update view when controller notifies observers" in {
       val (view, controller, bytes) =
-        makeView("") // Input irrelevant
+        makeView("")
 
-      controller.processMove(0,0) // notifyObservers()
+      controller.processMove(0,0)
+      view.update()
 
-      bytes.toString should include ("|") // Feldanzeige
+      bytes.toString should include ("|")
     }
 
     "print OutOfBounds when move is outside field" in {
       val (view, controller, bytes) =
         makeView("9 9\n")
 
-      view.startGameLoop()
+      val raw = view.readInput()
+      val cmd = view.parseInput(raw)
+
+      cmd match
+        case Some(Move(r,c)) =>
+          val res = controller.processMove(r,c)
+          view.handleResult(res)
+        case _ => fail("Expected Move")
 
       bytes.toString should include ("Koordinate ist außerhalb des Felds.")
     }
@@ -75,7 +91,10 @@ class ViewWSTest extends AnyWordSpec {
       val (view, controller, bytes) =
         makeView("1 1\n", field)
 
-      view.startGameLoop()
+      val raw = view.readInput()
+      val Some(Move(r,c)) = view.parseInput(raw)
+      val res = controller.processMove(r,c)
+      view.handleResult(res)
 
       bytes.toString should include ("Game Over.")
     }
@@ -90,7 +109,10 @@ class ViewWSTest extends AnyWordSpec {
       val (view, controller, bytes) =
         makeView("2 2\n", field)
 
-      view.startGameLoop()
+      val raw = view.readInput()
+      val Some(Move(r,c)) = view.parseInput(raw)
+      val res = controller.processMove(r,c)
+      view.handleResult(res)
 
       bytes.toString should include ("Glückwunsch, du hast alle Minen gefunden!")
     }
@@ -106,7 +128,10 @@ class ViewWSTest extends AnyWordSpec {
       val (view, controller, bytes) =
         makeView("2 2\n\n", field)
 
-      view.startGameLoop()
+      val raw = view.readInput()
+      val Some(Move(r,c)) = view.parseInput(raw)
+      val res = controller.processMove(r,c)
+      view.handleResult(res)
 
       bytes.toString should include ("Erfolgreich aufgedeckt.")
     }

@@ -7,6 +7,7 @@ import ControllerResult._
 class PlayingState extends GameState:
 
   override def name: String = "Playing"
+  var playing: Boolean = true
 
   override def processMove(r: Int, c: Int, controller: GameController): Unit =
     val field = controller.field

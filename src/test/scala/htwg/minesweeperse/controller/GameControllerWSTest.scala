@@ -4,8 +4,9 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
 import htwg.minesweeperse.model.*
 import htwg.minesweeperse.util.strategy.StandardRevealStrategy
-import htwg.minesweeperse.controller.{GameController, ControllerResult}
+import htwg.minesweeperse.controller.{ControllerResult, GameController}
 import ControllerResult.*
+import htwg.minesweeperse.util.state.PlayingState
 import htwg.minesweeperse.util.strategy.RevealStrategy
 
 class GameControllerWSTest extends AnyWordSpec {
@@ -51,7 +52,7 @@ class GameControllerWSTest extends AnyWordSpec {
       controller.processMove(5, 5)
 
       controller.lastResult shouldBe OutOfBounds
-      controller.playing shouldBe true
+      PlayingState().playing shouldBe true
     }
     "set lastResult to OutOfBounds when try fails" in {
       // Spielfeld

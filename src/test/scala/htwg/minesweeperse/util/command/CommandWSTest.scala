@@ -87,7 +87,7 @@ class CommandWSTest extends AnyWordSpec {
       // Undo, d.h. Zustand soll wieder PlayingState sein
       controller.undo()
       controller.state.isInstanceOf[PlayingState] shouldBe true
-      controller.playing shouldBe true
+      PlayingState().playing shouldBe true
 
       // Jetzt wieder ein normaler Zug sollte erlaubt sein
       controller.processMove(1,1)

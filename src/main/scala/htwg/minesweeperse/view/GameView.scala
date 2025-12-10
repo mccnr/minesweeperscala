@@ -19,6 +19,7 @@ class GameView(
 
   override def update(): Unit =
     out.println(controller.field.show())
+    handleResult(controller.lastResult)
 
   override def showWelcome(): Unit =
     out.println("Willkommen bei Minesweeper")
@@ -26,21 +27,16 @@ class GameView(
   override def showField(): Unit =
     out.println(controller.field.show())
 
-  override def readInput(): String =
+  /* override def readInput(): String =
     out.print("Gib eine valide Koordinate ein (Z S): ")
     val line = in.readLine()
-    if line == null then "" else line.trim // hier try-monad?
+    if line == null then "" else line.trim */
 
-  /* override def parseInput(s: String): InputCommand =
-    s.trim.toLowerCase match
-      case "undo" => UndoCmd
-      case "redo" => RedoCmd
-      case other => // hier case some?
-        val parts = other.split(" ")
-        if parts.length != 2 then return InvalidCmd
-        if !parts(0).matches("\\d+") || !parts(1).matches("\\d+") then
-          return InvalidCmd
-        Move(parts(0).toInt - 1, parts(1).toInt - 1) */
+  override def readInput(): String =
+    out.print("Gib eine valide Koordinate ein (Z S): ")
+    Option(in.readLine())
+      .map(_.trim) // trims non-null input
+      .getOrElse("")
 
   override def parseInput(s: String): Option[InputCommand] =
     s.trim.toLowerCase match

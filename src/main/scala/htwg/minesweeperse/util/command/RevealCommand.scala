@@ -18,9 +18,11 @@ class RevealCommand(controller: GameController, r: Int, c: Int) extends Command:
     controller.field = oldField
     controller.lastResult = Revealed
     controller.state = PlayingState() // state wird geprüft
-    controller.playing = true
+    //controller.playing = true
+    PlayingState().playing = true
 
   override def redoStep(): Unit =
     controller.field = newField
     controller.processMove(r, c)
-    controller.playing = true
+    //controller.playing = true
+    PlayingState().playing = true

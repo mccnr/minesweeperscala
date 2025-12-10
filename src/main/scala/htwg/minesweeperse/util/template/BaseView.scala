@@ -1,44 +1,59 @@
 package htwg.minesweeperse.util.template
 
-import htwg.minesweeperse.controller.{ControllerResult, GameController, InputCommand, Move, UndoCmd, RedoCmd, InvalidCmd}
-import htwg.minesweeperse.util.state.{GameOverState, WinState}
+import htwg.minesweeperse.controller.{ControllerResult, GameController, InputCommand, InvalidCmd, Move, RedoCmd, UndoCmd}
+import htwg.minesweeperse.util.state.{GameOverState, PlayingState, WinState}
 
 abstract class BaseView(controller: GameController):
 
-  final def startGameLoop(): Unit =
+  final def start(): Unit =
     showWelcome()
     showField()
+    startInputThread()
 
-    while controller.playing do
-      val raw = readInput()
-      if raw.isEmpty then
-        controller.playing = false
-      else
-        parseInput(raw) match
-          case None =>
-            handleInvalidInput(raw)
+  /* Eingaben werden asynchron gelesen
+  private def startInputThread(): Unit =
+    new Thread(() =>
+      while controller.playing do
+        val raw = readInput()
+        if raw.trim.isEmpty then
+          controller.playing = false
+        else
+          handleInput(raw)
+    ).start() */
 
-          case Some(Move(r, c)) if controller.state.isInstanceOf[GameOverState] =>
-            showField()
+  private def startInputThread(): Unit =
+    new Thread(() =>
+      while PlayingState().playing do
+        val raw = readInput()
+        if raw.trim.isEmpty then
+          PlayingState().playing = false
+        else
+          handleInput(raw)
+    ).start()
 
-          case Some(Move(r, c)) if controller.state.isInstanceOf[WinState] =>
-            showField()
+  // Verarbeitet einen eingegebenen Befehl
+  private def handleInput(raw: String): Unit =
+    parseInput(raw) match
+      case None =>
+        handleInvalidInput(raw)
 
-          case Some(Move(r, c)) =>
-            val res = controller.processMove(r, c)
-            handleResult(res)
-            showField()
+      case Some(Move(r, c)) if controller.state.isInstanceOf[GameOverState] =>
+        showField()
 
-          case Some(UndoCmd) =>
-            controller.undo()
-            showField()
+      case Some(Move(r, c)) if controller.state.isInstanceOf[WinState] =>
+        showField()
 
-          case Some(RedoCmd) =>
-            controller.redo()
-            showField()
+      case Some(Move(r, c)) =>
+        val res = controller.processMove(r, c)
 
-          case Some(InvalidCmd) =>
-            handleInvalidInput(raw)
+      case Some(UndoCmd) =>
+        controller.undo()
+
+      case Some(RedoCmd) =>
+        controller.redo()
+
+      case Some(InvalidCmd) =>
+        handleInvalidInput(raw)
 
   // Schritte
   def showWelcome(): Unit
@@ -47,3 +62,4 @@ abstract class BaseView(controller: GameController):
   def parseInput(s: String): Option[InputCommand]
   def handleInvalidInput(s: String): Unit
   def handleResult(result: ControllerResult): Unit
+  def update(): Unit

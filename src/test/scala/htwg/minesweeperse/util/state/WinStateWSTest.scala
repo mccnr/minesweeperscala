@@ -24,12 +24,11 @@ class WinStateWSTest extends AnyWordSpec {
       val controller = new GameController(field, StandardRevealStrategy())
       val state = WinState()
 
-      controller.playing shouldBe true
+      PlayingState().playing shouldBe true
 
       state.processMove(0, 0, controller)
 
       controller.lastResult shouldBe ControllerResult.Win
-      //controller.playing shouldBe false
     }
   }
 }

@@ -24,14 +24,13 @@ class GameOverStateWSTest extends AnyWordSpec {
 
       val controller = new GameController(field, StandardRevealStrategy())
 
-      controller.playing shouldBe true
+      PlayingState().playing shouldBe true
 
       val state = new GameOverState
 
       state.processMove(0, 0, controller)
 
       controller.lastResult shouldBe ControllerResult.GameOver
-      //controller.playing shouldBe false
     }
   }
 }

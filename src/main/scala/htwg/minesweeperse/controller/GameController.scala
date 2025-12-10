@@ -14,8 +14,6 @@ class GameController(
  ) extends Observable:
 
   val undoManager = UndoManager()
-
-  var playing: Boolean = true
   var lastResult: ControllerResult = Revealed
   var state: GameState = PlayingState()
 
@@ -29,14 +27,18 @@ class GameController(
       state.processMove(r, c, this)
     } match
       case Success(_) =>
+        notifyObservers() // TUI/GUI Parallele, richtige Ausgabe
         lastResult
 
       case Failure(_) =>
         lastResult = ControllerResult.OutOfBounds
+        notifyObservers() // TUI/GUI Parallele, richtige Ausgabe
         lastResult
 
   def undo(): Unit =
     undoManager.undo()
+    notifyObservers()
 
   def redo(): Unit =
     undoManager.redo()
+    notifyObservers()
