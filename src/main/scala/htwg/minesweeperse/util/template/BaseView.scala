@@ -9,18 +9,7 @@ abstract class BaseView(controller: GameController):
     showWelcome()
     showField()
     startInputThread()
-
-  /* Eingaben werden asynchron gelesen
-  private def startInputThread(): Unit =
-    new Thread(() =>
-      while controller.playing do
-        val raw = readInput()
-        if raw.trim.isEmpty then
-          controller.playing = false
-        else
-          handleInput(raw)
-    ).start() */
-
+  
   private def startInputThread(): Unit =
     new Thread(() =>
       while PlayingState().playing do

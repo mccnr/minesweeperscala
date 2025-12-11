@@ -6,6 +6,7 @@ import htwg.minesweeperse.view.GameView
 import htwg.minesweeperse.util.strategy._
 import htwg.minesweeperse.view.GameGUI
 import scalafx.application.JFXApp3
+import scalafx.application.Platform
 
 @main def runMain(): Unit =
 
@@ -15,7 +16,7 @@ import scalafx.application.JFXApp3
     // TUI starten
     val tui = new GameView(controller)
     val tuiThread = new Thread(() => tui.start())
-    tuiThread.setDaemon(true) // TUI darf die App nicht am Beenden hindern
+    tuiThread.setDaemon(true) // Damit beim schließen der GUI, es parallel terminiert.
     tuiThread.start()
 
     // GUI starten

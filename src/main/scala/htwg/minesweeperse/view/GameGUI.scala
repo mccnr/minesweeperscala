@@ -8,6 +8,7 @@ import scalafx.geometry.Insets
 import scalafx.application.Platform
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.SceneIncludes.jfxScene2sfx
+import scalafx.scene.image.{Image, ImageView}
 
 import htwg.minesweeperse.controller.*
 import htwg.minesweeperse.util.Observer
@@ -60,7 +61,14 @@ class GameGUI(controller: GameController) extends JFXApp3 with Observer:
           val btn = new Button:
             minWidth = 40
             minHeight = 40
-            text = cellDisplay(r, c)
+
+            style = "-fx-padding: 0; -fx-background-insets: 0; -fx-background-radius: 0;"
+
+            graphic = cellGraphic(r, c)
+            text = "" // kein Text
+
+            onMouseEntered = _ => style = "-fx-background-color: lightgray;"
+            onMouseExited = _ => style = "-fx-background-color: transparent;"
 
             onAction = _ =>
               controller.state match
@@ -71,20 +79,28 @@ class GameGUI(controller: GameController) extends JFXApp3 with Observer:
 
           gp.add(btn, c, r)
           btn
-        }.toVector
-      }.toVector
+        }
+      }
 
     gp
 
-  // GUI Anzeige vom Feld
-  private def cellDisplay(r: Int, c: Int): String =
+  private def cellGraphic(r: Int, c: Int): ImageView =
     val cell = controller.field.cells(r)(c)
 
-    if !cell.revealed then "?"
-    else if cell.isMine then "*"
-    else
-      val count = controller.field.countMinesAround(r, c)
-      if count == 0 then " " else count.toString
+    val img =
+      if !cell.revealed then
+        new Image("icons/hidden.png")
+      else if cell.isMine then
+        new Image("icons/mine.png")
+      else
+        val count = controller.field.countMinesAround(r, c)
+        new Image(s"icons/n$count.png")
+
+    new ImageView(img) {
+      fitWidth = 40
+      fitHeight = 40
+      preserveRatio = true
+    }
 
   // Observer update, wird vom Controller aufgerufen
   override def update(): Unit =
@@ -105,9 +121,10 @@ class GameGUI(controller: GameController) extends JFXApp3 with Observer:
         return
       end if
 
-      // Sonst: Buttons updaten
+      // Sonst Buttons updaten
       for r <- controller.field.cells.indices do
         for c <- controller.field.cells(r).indices do
           val btn = fieldButtons(r)(c)
-          btn.text = cellDisplay(r, c)
+          btn.graphic = cellGraphic(r, c)
+          btn.text = ""
     }

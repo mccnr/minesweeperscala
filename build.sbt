@@ -14,13 +14,4 @@ lazy val root = project
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % Test,
 
     // ScalaFX
-    libraryDependencies += "org.scalafx" %% "scalafx" % "20.0.0-R31",
-
-    // JavaFX (Windows)
-    {
-      val javaFXVersion = "20"
-      libraryDependencies += "org.openjfx" % "javafx-base" % javaFXVersion classifier "win"
-      libraryDependencies += "org.openjfx" % "javafx-controls" % javaFXVersion classifier "win"
-      libraryDependencies += "org.openjfx" % "javafx-graphics" % javaFXVersion classifier "win"
-    }
-  )
+    libraryDependencies += "org.scalafx" %% "scalafx" % "20.0.0-R31")
