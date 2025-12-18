@@ -1,15 +1,15 @@
 package htwg.minesweeperse.util.state
 
-import htwg.minesweeperse.model.Field
-import htwg.minesweeperse.controller.{GameController, ControllerResult}
+import htwg.minesweeperse.controller.ControllerResult
 import ControllerResult._
+import htwg.minesweeperse.controller.api.IController
 
 class PlayingState extends GameState:
 
   override def name: String = "Playing"
   var playing: Boolean = true
 
-  override def processMove(r: Int, c: Int, controller: GameController): Unit =
+  override def processMove(r: Int, c: Int, controller: IController): Unit =
     val field = controller.field
 
     // Out of Bounds?
@@ -24,7 +24,7 @@ class PlayingState extends GameState:
     controller.notifyObservers()
 
     // Mine?
-    if newField.cells.flatten.exists(c => c.isMine && c.revealed) then
+    if newField.hasRevealedMine /*newField.cells.flatten.exists(c => c.isMine && c.revealed)*/ then
       controller.lastResult = GameOver
       controller.changeState(new GameOverState)
       controller.state.processMove(r, c, controller) // logik des aktuellen states zu ende verarbeiten

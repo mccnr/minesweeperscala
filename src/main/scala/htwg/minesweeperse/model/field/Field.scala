@@ -1,8 +1,11 @@
-package htwg.minesweeperse.model
+/* package htwg.minesweeperse.model.field
+
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.field.api.IField
 
 import scala.util.Random
 
-case class Field(rows: Int, cols: Int, cells: Vector[Vector[Cell]]):
+case class Field(rows: Int, cols: Int, cells: Vector[Vector[Cell]]) extends IField:
   def countMinesAround(r: Int, c: Int): Int = {
     val neighbors = for
       dr <- -1 to 1
@@ -26,7 +29,7 @@ case class Field(rows: Int, cols: Int, cells: Vector[Vector[Cell]]):
     }
   }
 
-  def revealAllMines(): Field =
+  override def revealAllMines(): Field =
     val newCells = cells.map(_.map(cell =>
       if cell.isMine then cell.copy(revealed = true) else cell
     ))
@@ -67,10 +70,28 @@ case class Field(rows: Int, cols: Int, cells: Vector[Vector[Cell]]):
     s"$border\n$body\n$border"
   }
 
+  override def hasRevealedMine: Boolean =
+    cells.flatten.exists(c => c.isMine && c.revealed)
+
+  override def isRevealed(r: Int, c: Int): Boolean =
+    cells(r)(c).revealed
+
+  override def isMine(r: Int, c: Int): Boolean =
+    cells(r)(c).isMine
+
+  override def minesAround(r: Int, c: Int): Int =
+    countMinesAround(r, c)
+
+  override def revealOne(r: Int, c: Int): IField =
+    if cells(r)(c).revealed then this
+    else
+      val updatedRow = cells(r).updated(c, cells(r)(c).copy(revealed = true))
+      Field(rows, cols, cells.updated(r, updatedRow))
+
 object Field:
   def random(rows: Int, cols: Int, mineChance: Double = 0.2): Field =
     val generated = Vector.tabulate(rows, cols) { (_, _) =>
       val isMine = Random.nextDouble() < mineChance
       Cell(if isMine then 1 else 0)
     }
-    Field(rows, cols, generated)
+    Field(rows, cols, generated) */

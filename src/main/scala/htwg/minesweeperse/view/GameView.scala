@@ -1,16 +1,16 @@
 package htwg.minesweeperse.view
 
 import htwg.minesweeperse.controller.ControllerResult.{GameOver, OutOfBounds, Revealed, Win}
-import htwg.minesweeperse.controller.GameController
-import htwg.minesweeperse.util.Observer
 import htwg.minesweeperse.util.template.BaseView
 import htwg.minesweeperse.controller.ControllerResult
 import htwg.minesweeperse.controller._
+import htwg.minesweeperse.controller.api.IController
+import htwg.minesweeperse.util.observer.Observer
 
 import java.io.*
 
 class GameView(
-   controller: GameController,
+   controller: IController,
    out: PrintStream = System.out,
    in: BufferedReader = new BufferedReader(new InputStreamReader(System.in))
    ) extends BaseView(controller), Observer:
@@ -26,11 +26,6 @@ class GameView(
 
   override def showField(): Unit =
     out.println(controller.field.show())
-
-  /* override def readInput(): String =
-    out.print("Gib eine valide Koordinate ein (Z S): ")
-    val line = in.readLine()
-    if line == null then "" else line.trim */
 
   override def readInput(): String =
     out.print("Gib eine valide Koordinate ein (Z S): ")

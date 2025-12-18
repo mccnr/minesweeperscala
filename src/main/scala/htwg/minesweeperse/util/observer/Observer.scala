@@ -1,4 +1,4 @@
-package htwg.minesweeperse.util
+package htwg.minesweeperse.util.observer
 
 import scala.collection.mutable.ListBuffer
 

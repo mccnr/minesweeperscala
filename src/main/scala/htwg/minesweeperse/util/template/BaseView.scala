@@ -1,9 +1,10 @@
 package htwg.minesweeperse.util.template
 
-import htwg.minesweeperse.controller.{ControllerResult, GameController, InputCommand, InvalidCmd, Move, RedoCmd, UndoCmd}
+import htwg.minesweeperse.controller.api.IController
+import htwg.minesweeperse.controller.{ControllerResult, InputCommand, InvalidCmd, Move, RedoCmd, UndoCmd}
 import htwg.minesweeperse.util.state.{GameOverState, PlayingState, WinState}
 
-abstract class BaseView(controller: GameController):
+abstract class BaseView(controller: IController):
 
   final def start(): Unit =
     showWelcome()

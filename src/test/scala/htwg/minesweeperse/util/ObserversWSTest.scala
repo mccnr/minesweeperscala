@@ -1,6 +1,6 @@
 package htwg.minesweeperse.util
 
-import htwg.minesweeperse.util.{Observable, Observer}
+import htwg.minesweeperse.util.observer.{Observable, Observer}
 import org.scalatest.wordspec.AnyWordSpec
 
 class ObserversWSTest extends AnyWordSpec {

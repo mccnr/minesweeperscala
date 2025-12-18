@@ -1,6 +1,6 @@
 package htwg.minesweeperse.util.strategy
 
-import htwg.minesweeperse.model.Field
+import htwg.minesweeperse.model.field.api.IField
 
 trait RevealStrategy:
-  def reveal(field: Field, r: Int, c: Int): Field
+  def reveal(field: IField, r: Int, c: Int): IField
