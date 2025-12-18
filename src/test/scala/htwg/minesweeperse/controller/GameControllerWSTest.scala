@@ -19,22 +19,31 @@ import htwg.minesweeperse.util.state.PlayingState
 
 class GameControllerWSTest extends AnyWordSpec {
 
-  // Test strat, welche crashed
+  // Strategy die absichtlich crasht
   class ThrowingStrategy extends IRevealStrategy:
     override def reveal(field: IField, r: Int, c: Int): IField =
       throw new IndexOutOfBoundsException("boom")
 
-  // Factory Creator
-  val cellCreator = new CellCreator
-  val fieldCreator = new RandomFieldCreator
-  val revealCreator = new StandardRevealCreator
-  val controllerCreator = new ControllerCreator
+  // Creator
+  val cellCreator       = CellCreator()
+  val fieldCreator      = RandomFieldCreator()
+  val revealCreator     = StandardRevealCreator()
+  val controllerCreator = ControllerCreator()
 
-  // Tests
+  // Hilfsfeld mit genau einer Mine
+  def fieldWithMine(): IField =
+    fieldCreator.fromCells(
+      Vector(
+        Vector(cellCreator.create(0), cellCreator.create(0), cellCreator.create(0)),
+        Vector(cellCreator.create(0), cellCreator.create(0), cellCreator.create(0)),
+        Vector(cellCreator.create(0), cellCreator.create(0), cellCreator.create(1)) // Mine
+      )
+    )
+
   "A GameController" should {
 
     "update the field when a move is made" in {
-      val field = fieldCreator.create(3, 3)
+      val field = fieldWithMine()
       val reveal = revealCreator.create()
       val controller = controllerCreator.create(field, reveal)
 
@@ -44,19 +53,8 @@ class GameControllerWSTest extends AnyWordSpec {
       controller.field.isRevealed(1, 1) shouldBe true
     }
 
-    /* "end the game when a mine is revealed" in {
-      val field = fieldCreator.create(2, 2)
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
-
-      controller.processMove(0, 0)
-
-      controller.lastResult shouldBe GameOver
-      controller.field.hasRevealedMine shouldBe true
-    } */
-
     "return OutOfBounds when coordinates are invalid" in {
-      val field = fieldCreator.create(3, 3)
+      val field = fieldWithMine()
       val reveal = revealCreator.create()
       val controller = controllerCreator.create(field, reveal)
 
@@ -67,7 +65,7 @@ class GameControllerWSTest extends AnyWordSpec {
     }
 
     "set lastResult to OutOfBounds when reveal strategy throws" in {
-      val field = fieldCreator.create(2, 2)
+      val field = fieldWithMine()
       val controller = controllerCreator.create(field, new ThrowingStrategy)
 
       controller.processMove(99, 99)
