@@ -1,9 +1,9 @@
-package htwg.minesweeperse.util.strategy.reveal.impl
+package htwg.minesweeperse.util.strategy.revealComponent.impl
 
-import htwg.minesweeperse.util.strategy.reveal.api.IRevealStrategy
-import htwg.minesweeperse.model.field.api.IField
+import com.google.inject.Inject
+import htwg.minesweeperse.model.fieldComponent.impl.IField
 
- class NoFloodRevealStrategy extends IRevealStrategy:
+class NoFloodRevealStrategy @Inject() extends IRevealStrategy {
 
    override def reveal(field: IField, r: Int, c: Int): IField =
      if r < 0 || r >= field.rows || c < 0 || c >= field.cols then
@@ -12,5 +12,6 @@ import htwg.minesweeperse.model.field.api.IField
        field.revealAllMines()
      else
        field.revealOne(r, c)
+  }
 
 

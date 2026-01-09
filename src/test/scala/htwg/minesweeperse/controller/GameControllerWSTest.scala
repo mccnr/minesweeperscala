@@ -1,51 +1,42 @@
 package htwg.minesweeperse.controller
 
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.should.Matchers._
 
-import htwg.minesweeperse.controller.ControllerResult.*
-import htwg.minesweeperse.controller.api.IController
-
-import htwg.minesweeperse.model.field.api.IField
-import htwg.minesweeperse.model.cell.api.ICell
-
-import htwg.minesweeperse.util.factory.controllerFactory.ControllerCreator
-import htwg.minesweeperse.util.factory.fieldFactory.RandomFieldCreator
-import htwg.minesweeperse.util.factory.cellFactory.CellCreator
-import htwg.minesweeperse.util.factory.revealFactory.StandardRevealCreator
-
-import htwg.minesweeperse.util.strategy.reveal.api.IRevealStrategy
+import htwg.minesweeperse.controllerComponent.impl.implGC
+import htwg.minesweeperse.util.state.ControllerResult._
 import htwg.minesweeperse.util.state.PlayingState
+
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
+
+import htwg.minesweeperse.util.strategy.revealComponent.impl.IRevealStrategy
+import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
 
 class GameControllerWSTest extends AnyWordSpec {
 
   // Strategy die absichtlich crasht
-  class ThrowingStrategy extends IRevealStrategy:
+  class ThrowingStrategy extends IRevealStrategy {
     override def reveal(field: IField, r: Int, c: Int): IField =
       throw new IndexOutOfBoundsException("boom")
-
-  // Creator
-  val cellCreator       = CellCreator()
-  val fieldCreator      = RandomFieldCreator()
-  val revealCreator     = StandardRevealCreator()
-  val controllerCreator = ControllerCreator()
+  }
 
   // Hilfsfeld mit genau einer Mine
-  def fieldWithMine(): IField =
-    fieldCreator.fromCells(
-      Vector(
-        Vector(cellCreator.create(0), cellCreator.create(0), cellCreator.create(0)),
-        Vector(cellCreator.create(0), cellCreator.create(0), cellCreator.create(0)),
-        Vector(cellCreator.create(0), cellCreator.create(0), cellCreator.create(1)) // Mine
-      )
+  def fieldWithMine(): IField = {
+    val cells = Vector(
+      Vector(Cell(0), Cell(0), Cell(0)),
+      Vector(Cell(0), Cell(0), Cell(0)),
+      Vector(Cell(0), Cell(0), Cell(1)) // Mine
     )
+    new implFieldAdvanced(3, 3, cells)
+  }
 
   "A GameController" should {
 
     "update the field when a move is made" in {
       val field = fieldWithMine()
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
+      val reveal = new StandardRevealStrategy
+      val controller = new implGC(field, reveal)
 
       controller.processMove(1, 1)
 
@@ -55,8 +46,8 @@ class GameControllerWSTest extends AnyWordSpec {
 
     "return OutOfBounds when coordinates are invalid" in {
       val field = fieldWithMine()
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
+      val reveal = new StandardRevealStrategy
+      val controller = new implGC(field, reveal)
 
       controller.processMove(10, 10)
 
@@ -66,7 +57,7 @@ class GameControllerWSTest extends AnyWordSpec {
 
     "set lastResult to OutOfBounds when reveal strategy throws" in {
       val field = fieldWithMine()
-      val controller = controllerCreator.create(field, new ThrowingStrategy)
+      val controller = new implGC(field, new ThrowingStrategy)
 
       controller.processMove(99, 99)
 

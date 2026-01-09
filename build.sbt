@@ -9,6 +9,7 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test,
+	libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0",
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.14",
 	scalacOptions += "-Wconf:msg=Implicit parameters should be provided with a `using` clause:s",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.14" % Test,

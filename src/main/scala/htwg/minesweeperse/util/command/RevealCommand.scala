@@ -1,8 +1,8 @@
 package htwg.minesweeperse.util.command
 
-import htwg.minesweeperse.controller.ControllerResult._
-import htwg.minesweeperse.controller.api.IController
-import htwg.minesweeperse.model.field.api.IField
+import htwg.minesweeperse.controllerComponent.impl.IController
+import htwg.minesweeperse.model.fieldComponent.impl.IField
+import htwg.minesweeperse.util.state.ControllerResult._
 import htwg.minesweeperse.util.state._
 
 class RevealCommand(controller: IController, r: Int, c: Int) extends Command:

@@ -1,59 +1,39 @@
 package htwg.minesweeperse.util.command
 
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.should.Matchers._
 
-import htwg.minesweeperse.controller.ControllerResult
-import htwg.minesweeperse.controller.ControllerResult.*
-
-import htwg.minesweeperse.controller.api.IController
-import htwg.minesweeperse.util.factory.controllerFactory.ControllerCreator
-
-import htwg.minesweeperse.model.field.api.IField
-import htwg.minesweeperse.util.factory.fieldFactory.RandomFieldCreator
-
-import htwg.minesweeperse.model.cell.api.ICell
-import htwg.minesweeperse.util.factory.cellFactory.CellCreator
-
-import htwg.minesweeperse.util.factory.revealFactory.StandardRevealCreator
-
-import htwg.minesweeperse.util.state.*
+import htwg.minesweeperse.controllerComponent.impl.implGC
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
+import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
+import htwg.minesweeperse.util.state._
+import htwg.minesweeperse.util.state.ControllerResult._
 
 class CommandWSTest extends AnyWordSpec {
 
- // Factories
-  val cellFactory       = CellCreator()
-  val fieldFactory      = RandomFieldCreator()
-  val revealCreator     = StandardRevealCreator()
-  val controllerCreator = ControllerCreator()
-
-// Hilfsfunktionen
-  def emptyCell(): ICell = cellFactory.create(0)
-  def mineCell(): ICell  = cellFactory.create(1)
-
-  def field2x2Empty(): IField =
-    fieldFactory.fromCells(
-      Vector(
-        Vector(emptyCell(), emptyCell()),
-        Vector(emptyCell(), emptyCell())
-      )
+  //Hilfsfunktionen
+  def field2x2Empty(): IField = {
+    val cells = Vector(
+      Vector(Cell(0), Cell(0)),
+      Vector(Cell(0), Cell(0))
     )
+    new implFieldAdvanced(2, 2, cells)
+  }
 
-  def fieldWithMine(): IField =
-    fieldFactory.fromCells(
-      Vector(
-        Vector(mineCell(), emptyCell()),
-        Vector(emptyCell(), emptyCell())
-      )
+  def fieldWithMine(): IField = {
+    val cells = Vector(
+      Vector(Cell(1), Cell(0)),
+      Vector(Cell(0), Cell(0))
     )
+    new implFieldAdvanced(2, 2, cells)
+  }
 
-// Tests
+  // Tests
   "A RevealCommand with Undo/Redo" should {
 
     "execute a reveal via doStep()" in {
-      val field = field2x2Empty()
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
 
       val cmd = new RevealCommand(controller, 0, 0)
       cmd.doStep()
@@ -62,9 +42,7 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "undo a reveal via undoStep()" in {
-      val field = field2x2Empty()
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
 
       val cmd = new RevealCommand(controller, 0, 0)
       cmd.doStep()
@@ -75,9 +53,7 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "redo a reveal via redoStep()" in {
-      val field = field2x2Empty()
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
 
       val cmd = new RevealCommand(controller, 0, 0)
       cmd.doStep()
@@ -88,9 +64,7 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "work through GameController.undo() and redo()" in {
-      val field = field2x2Empty()
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
 
       controller.processMove(0, 0)
       controller.field.isRevealed(0, 0) shouldBe true
@@ -103,19 +77,17 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "allow undo after GameOver and correctly restore playability" in {
-      val field = fieldWithMine()
-      val reveal = revealCreator.create()
-      val controller = controllerCreator.create(field, reveal)
+      val controller = new implGC(fieldWithMine(), new StandardRevealStrategy)
 
       // Mine treffen
       controller.processMove(0, 0)
       controller.state.isInstanceOf[GameOverState] shouldBe true
 
-      // Undo dann wieder PlayingState
+      // Undo zu wieder spielbar
       controller.undo()
       controller.state.isInstanceOf[PlayingState] shouldBe true
 
-      // Weiter spielen erlaubt
+      // Weiter spielen
       controller.processMove(1, 1)
       controller.lastResult shouldBe Revealed
     }

@@ -3,27 +3,22 @@ package htwg.minesweeperse.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
 
-import htwg.minesweeperse.model.cell.api.ICell
-import htwg.minesweeperse.model.field.api.IField
-
-import htwg.minesweeperse.util.factory.cellFactory.CellCreator
-import htwg.minesweeperse.util.factory.fieldFactory.RandomFieldCreator
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
 
 class FieldCellWSTest extends AnyWordSpec {
 
- // Factories
-  val cellFactory  = CellCreator()
-  val fieldFactory = RandomFieldCreator()
+  // Hilfsfunktionen
+  def emptyCell(): Cell = Cell(0)
+  def mineCell(): Cell  = Cell(1)
 
- // Hilfsfunktionen
-  def emptyCell(): ICell = cellFactory.create(0)
-  def mineCell(): ICell  = cellFactory.create(1)
+  def fieldFromCells(cells: Vector[Vector[Cell]]): IField =
+    new implFieldAdvanced(cells.length, cells.head.length, cells)
 
-  def fieldFromCells(cells: Vector[Vector[ICell]]): IField =
-    fieldFactory.fromCells(cells)
-
-// Cell Tests
-  "A Cell component" should {
+  // ======================
+  // Cell Tests
+  // ======================
+  "A Cell" should {
 
     "have isMine = true when value == 1" in {
       mineCell().isMine shouldBe true
@@ -39,23 +34,20 @@ class FieldCellWSTest extends AnyWordSpec {
     }
 
     "display '*' for revealed mines" in {
-      val field = fieldFromCells(Vector(Vector(mineCell())))
-      val revealed = field.reveal(0, 0)
-
-      revealed.isMine(0, 0) shouldBe true
-      revealed.isRevealed(0, 0) shouldBe true
+      val cell = mineCell().reveal()
+      cell.display() shouldBe "*"
     }
 
-    "display numbers or blank for revealed non-mines" in {
-      val field = fieldFromCells(Vector(Vector(emptyCell())))
-      val revealed = field.reveal(0, 0)
-
-      revealed.isRevealed(0, 0) shouldBe true
+    "display blank or number for revealed non-mine cells" in {
+      val cell = emptyCell().reveal()
+      cell.display(Some(0)) shouldBe " "
     }
   }
 
-// Field Tests
-  "A Field component" should {
+  // ======================
+  // Field Tests
+  // ======================
+  "A Field" should {
 
     "count mines around a cell correctly" in {
       val field = fieldFromCells(
@@ -69,21 +61,21 @@ class FieldCellWSTest extends AnyWordSpec {
       field.countMinesAround(1, 0) shouldBe 2
     }
 
-    "reveal should reveal a non-mine cell" in {
+    "reveal a non-mine cell" in {
       val field = fieldFromCells(Vector(Vector(emptyCell())))
       val revealed = field.reveal(0, 0)
 
       revealed.isRevealed(0, 0) shouldBe true
     }
 
-    "reveal should reveal a mine and mark game over condition" in {
+    "reveal a mine and mark game over condition" in {
       val field = fieldFromCells(Vector(Vector(mineCell())))
       val revealed = field.reveal(0, 0)
 
       revealed.hasRevealedMine shouldBe true
     }
 
-    "reveal should flood-fill empty regions" in {
+    "flood-fill empty regions" in {
       val field = fieldFromCells(
         Vector(
           Vector(emptyCell(), emptyCell()),
@@ -93,14 +85,13 @@ class FieldCellWSTest extends AnyWordSpec {
 
       val revealed = field.reveal(0, 0)
 
-      for
+      for {
         r <- 0 until revealed.rows
         c <- 0 until revealed.cols
-      do
-        revealed.isRevealed(r, c) shouldBe true
+      } revealed.isRevealed(r, c) shouldBe true
     }
 
-    "isWin should return true only when all non-mines are revealed" in {
+    "detect win when all non-mine cells are revealed" in {
       val field = fieldFromCells(
         Vector(
           Vector(mineCell(), emptyCell()),
@@ -117,31 +108,32 @@ class FieldCellWSTest extends AnyWordSpec {
       revealed.isWin shouldBe true
     }
 
-    "create a field with correct dimensions" in {
-      val field = fieldFactory.create(5, 5)
+    "have correct dimensions" in {
+      val field = fieldFromCells(
+        Vector.fill(5, 5)(emptyCell())
+      )
 
       field.rows shouldBe 5
       field.cols shouldBe 5
     }
 
     "create a field that contains cells" in {
-      val field = fieldFactory.create(4, 4)
+      val field = fieldFromCells(
+        Vector.fill(4, 4)(emptyCell())
+      )
 
-      var foundCell = false
-      for
+      for {
         r <- 0 until field.rows
         c <- 0 until field.cols
-      do
-        foundCell = true
-
-      foundCell shouldBe true
-    }
-    "A Cell component" should {
-
-      "use default None for revealed non-mine cell" in {
-        val cell = cellFactory.create(0).reveal()
-        cell.display() shouldBe "?"
+      } {
+        field.isRevealed(r, c) shouldBe false
       }
     }
+
+    "use default '?' when revealed non-mine cell is displayed without context" in {
+      val cell = emptyCell().reveal()
+      cell.display() shouldBe "?"
+    }
+
   }
 }

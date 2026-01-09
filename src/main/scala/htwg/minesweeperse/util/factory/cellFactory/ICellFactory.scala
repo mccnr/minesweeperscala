@@ -1,7 +1,7 @@
 package htwg.minesweeperse.util.factory.cellFactory
 
-import htwg.minesweeperse.model.cell.api.ICell
+import htwg.minesweeperse.model.cell.Cell
 
 trait ICellFactory:
-  def create(value: Int): ICell
+  def create(value: Int): Cell
 

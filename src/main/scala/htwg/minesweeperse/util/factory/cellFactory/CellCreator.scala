@@ -1,12 +1,11 @@
 package htwg.minesweeperse.util.factory.cellFactory
 
-import htwg.minesweeperse.model.cell.api.ICell
-import htwg.minesweeperse.model.cell.impl.implCell
+import htwg.minesweeperse.model.cell.Cell
 
 class CellCreator extends ICellFactory:
-  override def create(value: Int): ICell =
-    implCell(value)
+  override def create(value: Int): Cell =
+    Cell(value)
 
   // T
-  def empty(): ICell = create(0)
-  def mine(): ICell = create(1)
+  def empty(): Cell = create(0)
+  def mine(): Cell = create(1)

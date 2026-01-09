@@ -3,35 +3,24 @@ package htwg.minesweeperse.util.state
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
 
-import htwg.minesweeperse.controller.ControllerResult.*
-import htwg.minesweeperse.controller.api.IController
-import htwg.minesweeperse.model.cell.api.ICell
-import htwg.minesweeperse.model.field.api.IField
-
-import htwg.minesweeperse.util.factory.cellFactory.CellCreator
-import htwg.minesweeperse.util.factory.fieldFactory.RandomFieldCreator
-import htwg.minesweeperse.util.factory.controllerFactory.ControllerCreator
-import htwg.minesweeperse.util.factory.revealFactory.StandardRevealCreator
+import htwg.minesweeperse.util.state.ControllerResult.*
+import htwg.minesweeperse.controllerComponent.impl.implGC
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
+import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
 
 class PlayingStateWSTest extends AnyWordSpec {
 
-// Factories
-  val cellCreator       = CellCreator()
-  val fieldCreator      = RandomFieldCreator()
-  val revealCreator     = StandardRevealCreator()
-  val controllerCreator = ControllerCreator()
 
-// Hilfsfunktionen
-  def emptyCell(): ICell = cellCreator.create(0)
-  def mineCell(): ICell  = cellCreator.create(1)
+  // Hilfsfunktion
+  def controllerFromCells(cells: Vector[Vector[Cell]]) =
+    new implGC(
+      new implFieldAdvanced(cells.length, cells.head.length, cells),
+      new StandardRevealStrategy
+    )
 
-  def controllerFromCells(cells: Vector[Vector[ICell]]): IController = {
-    val field  = fieldCreator.fromCells(cells)
-    val reveal = revealCreator.create()
-    controllerCreator.create(field, reveal)
-  }
 
-// Tests
+  // Tests
   "A PlayingState" should {
 
     "have the correct name" in {
@@ -39,13 +28,12 @@ class PlayingStateWSTest extends AnyWordSpec {
     }
 
     "return OutOfBounds when move is outside field" in {
-      val controller =
-        controllerFromCells(
-          Vector(
-            Vector(emptyCell(), emptyCell()),
-            Vector(emptyCell(), emptyCell())
-          )
+      val controller = controllerFromCells(
+        Vector(
+          Vector(Cell(0), Cell(0)),
+          Vector(Cell(0), Cell(0))
         )
+      )
 
       val state = PlayingState()
       state.processMove(5, 5, controller)
@@ -54,13 +42,12 @@ class PlayingStateWSTest extends AnyWordSpec {
     }
 
     "perform a normal reveal using the strategy" in {
-      val controller =
-        controllerFromCells(
-          Vector(
-            Vector(emptyCell(), emptyCell()),
-            Vector(mineCell(),  emptyCell())
-          )
+      val controller = controllerFromCells(
+        Vector(
+          Vector(Cell(0), Cell(0)),
+          Vector(Cell(1), Cell(0))
         )
+      )
 
       val state = PlayingState()
       state.processMove(0, 0, controller)
@@ -70,13 +57,12 @@ class PlayingStateWSTest extends AnyWordSpec {
     }
 
     "switch to GameOverState when a mine is revealed" in {
-      val controller =
-        controllerFromCells(
-          Vector(
-            Vector(mineCell(), emptyCell()),
-            Vector(emptyCell(), emptyCell())
-          )
+      val controller = controllerFromCells(
+        Vector(
+          Vector(Cell(1), Cell(0)),
+          Vector(Cell(0), Cell(0))
         )
+      )
 
       val state = PlayingState()
       state.processMove(0, 0, controller)
@@ -86,12 +72,11 @@ class PlayingStateWSTest extends AnyWordSpec {
     }
 
     "switch to WinState when all non-mine cells are revealed" in {
-      val controller =
-        controllerFromCells(
-          Vector(
-            Vector(emptyCell(), mineCell())
-          )
+      val controller = controllerFromCells(
+        Vector(
+          Vector(Cell(0), Cell(1))
         )
+      )
 
       val state = PlayingState()
       state.processMove(0, 0, controller)

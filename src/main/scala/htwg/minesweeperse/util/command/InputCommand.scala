@@ -1,4 +1,5 @@
-package htwg.minesweeperse.controller
+package htwg.minesweeperse.util.command
+
 
 sealed trait InputCommand // Es dürfen alle Unterklassen dieses Traits nur in selber Datei definieren
 case class Move(r: Int, c: Int) extends InputCommand

@@ -1,15 +1,17 @@
 package htwg.minesweeperse.view
 
-import htwg.minesweeperse.controller.ControllerResult.{GameOver, OutOfBounds, Revealed, Win}
+import htwg.minesweeperse.util.state.ControllerResult.{GameOver, OutOfBounds, Revealed, Win}
 import htwg.minesweeperse.util.template.BaseView
-import htwg.minesweeperse.controller.ControllerResult
-import htwg.minesweeperse.controller._
-import htwg.minesweeperse.controller.api.IController
+import htwg.minesweeperse.controllerComponent
+import htwg.minesweeperse.controllerComponent.impl.IController
+import htwg.minesweeperse.util.command.{InputCommand, Move, RedoCmd, UndoCmd}
 import htwg.minesweeperse.util.observer.Observer
+import htwg.minesweeperse.util.state.ControllerResult
+import com.google.inject.Inject
 
 import java.io.*
 
-class GameView(
+class GameView (
    controller: IController,
    out: PrintStream = System.out,
    in: BufferedReader = new BufferedReader(new InputStreamReader(System.in))

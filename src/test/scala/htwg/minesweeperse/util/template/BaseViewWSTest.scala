@@ -3,42 +3,30 @@ package htwg.minesweeperse.util.template
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
 
-import htwg.minesweeperse.controller.api.IController
-import htwg.minesweeperse.controller.ControllerResult
-import htwg.minesweeperse.util.state.*
-import htwg.minesweeperse.util.command.*
+import htwg.minesweeperse.controllerComponent.impl.implGC
+import htwg.minesweeperse.controllerComponent.impl.IController
 
-import htwg.minesweeperse.util.factory.controllerFactory.ControllerCreator
-import htwg.minesweeperse.util.factory.fieldFactory.RandomFieldCreator
-import htwg.minesweeperse.util.factory.cellFactory.CellCreator
-import htwg.minesweeperse.util.factory.revealFactory.StandardRevealCreator
-import htwg.minesweeperse.controller.InputCommand
-import htwg.minesweeperse.controller.{Move, UndoCmd, RedoCmd, InvalidCmd}
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.implFieldAdvanced
+
+import htwg.minesweeperse.util.command.*
+import htwg.minesweeperse.util.state.*
+import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
+import htwg.minesweeperse.util.command.InputCommand
+import htwg.minesweeperse.util.state.ControllerResult
 
 class BaseViewWSTest extends AnyWordSpec {
 
-  /* --------------------------------------------------
-   * Factories (Client kennt nur Creator)
-   * -------------------------------------------------- */
-  val cellCreator   = CellCreator()
-  val fieldCreator  = RandomFieldCreator()
-  val revealCreator = StandardRevealCreator()
-  val controllerCreator = ControllerCreator()
+  // Hilfsfunktionen
+  def dummyController(): IController = {
+    val cells = Vector.fill(2, 2)(Cell(0))
+    val field = new implFieldAdvanced(2, 2, cells)
+    new implGC(field, new StandardRevealStrategy)
+  }
 
-  /* --------------------------------------------------
-   * Hilfsfunktion
-   * -------------------------------------------------- */
-  def dummyController(): IController =
-    val field = fieldCreator.fromCells(
-      Vector.fill(2, 2)(cellCreator.create(0))
-    )
-    controllerCreator.create(field, revealCreator.create())
-
-  /* --------------------------------------------------
-   * MockView
-   * -------------------------------------------------- */
+  // MockView
   class MockView(controller: IController, inputs: List[String])
-    extends BaseView(controller):
+    extends BaseView(controller) {
 
     private var inputQueue = inputs
     var outputLog: List[String] = Nil
@@ -60,7 +48,7 @@ class BaseViewWSTest extends AnyWordSpec {
       s match
         case "undo" => Some(UndoCmd)
         case "redo" => Some(RedoCmd)
-        case "m"    => Some(Move(0,0))
+        case "m"    => Some(Move(0, 0))
         case _      => None
 
     override def handleInvalidInput(s: String): Unit =
@@ -71,18 +59,16 @@ class BaseViewWSTest extends AnyWordSpec {
 
     override def update(): Unit =
       outputLog ::= "update"
-  end MockView
+  }
 
-  /* ==================================================
-   * TESTS
-   * ================================================== */
+  // Tests
   "BaseView" should {
 
     "block moves when in GameOverState" in {
       val controller = dummyController()
       controller.state = GameOverState()
 
-      val view = MockView(controller, List("m", ""))
+      val view = new MockView(controller, List("m", ""))
       view.start()
       Thread.sleep(50)
 
@@ -93,7 +79,7 @@ class BaseViewWSTest extends AnyWordSpec {
       val controller = dummyController()
       controller.state = WinState()
 
-      val view = MockView(controller, List("m", ""))
+      val view = new MockView(controller, List("m", ""))
       view.start()
       Thread.sleep(50)
 
@@ -102,10 +88,10 @@ class BaseViewWSTest extends AnyWordSpec {
 
     "execute UndoCmd" in {
       val controller = dummyController()
-      controller.processMove(0,0)
+      controller.processMove(0, 0)
       val before = controller.field
 
-      val view = MockView(controller, List("undo", ""))
+      val view = new MockView(controller, List("undo", ""))
       view.start()
       Thread.sleep(50)
 
@@ -114,11 +100,11 @@ class BaseViewWSTest extends AnyWordSpec {
 
     "execute RedoCmd" in {
       val controller = dummyController()
-      controller.processMove(0,0)
+      controller.processMove(0, 0)
       controller.undo()
       val before = controller.field
 
-      val view = MockView(controller, List("redo", ""))
+      val view = new MockView(controller, List("redo", ""))
       view.start()
       Thread.sleep(50)
 
@@ -127,7 +113,7 @@ class BaseViewWSTest extends AnyWordSpec {
 
     "handle invalid input" in {
       val controller = dummyController()
-      val view = MockView(controller, List("invalid", ""))
+      val view = new MockView(controller, List("invalid", ""))
 
       view.start()
       Thread.sleep(50)
@@ -137,12 +123,12 @@ class BaseViewWSTest extends AnyWordSpec {
 
     "execute a Move command" in {
       val controller = dummyController()
-      val view = MockView(controller, List("m", ""))
+      val view = new MockView(controller, List("m", ""))
 
       view.start()
       Thread.sleep(50)
 
-      controller.field.isRevealed(0,0) shouldBe true
+      controller.field.isRevealed(0, 0) shouldBe true
     }
 
     "handle InvalidCmd explicitly" in {

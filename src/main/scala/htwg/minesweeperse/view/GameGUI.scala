@@ -1,5 +1,6 @@
 package htwg.minesweeperse.view
 
+import htwg.minesweeperse.controllerComponent.impl.IController
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.layout.{GridPane, HBox, VBox}
@@ -9,7 +10,6 @@ import scalafx.application.Platform
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.SceneIncludes.jfxScene2sfx
 import scalafx.scene.image.{Image, ImageView}
-import htwg.minesweeperse.controller.api.IController
 import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state._
 
@@ -55,7 +55,7 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       vgap = 5
 
     /* fieldButtons =
-      controller.field.cells.zipWithIndex.map { (row, r) => // Für jede Zeile wird eine neue Zeile von Buttons erzeugt
+      controller.fieldComponent.cells.zipWithIndex.map { (row, r) => // Für jede Zeile wird eine neue Zeile von Buttons erzeugt
         row.zipWithIndex.map { (cell, c) => // Spaltennr
           val btn = new Button:
             minWidth = 40
@@ -109,7 +109,7 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
     gp
 
   private def cellGraphic(r: Int, c: Int): ImageView =
-    //val cell = controller.field.cells(r)(c)
+    //val cell = controller.fieldComponent.cells(r)(c)
     val field = controller.field
 
     val img =
@@ -118,7 +118,7 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       else if field.isMine(r, c) then // if cell.isMine then
         new Image("icons/mine.png")
       else
-        val count = field.countMinesAround(r, c)   // val count = controller.field.countMinesAround(r, c)
+        val count = field.countMinesAround(r, c)   // val count = controller.fieldComponent.countMinesAround(r, c)
         new Image(s"icons/n$count.png")
 
     new ImageView(img) {

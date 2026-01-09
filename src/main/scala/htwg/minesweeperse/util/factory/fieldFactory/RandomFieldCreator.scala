@@ -1,14 +1,14 @@
-package htwg.minesweeperse.util.factory.fieldFactory
+/* package htwg.minesweeperse.util.factory.fieldFactory
 
-import htwg.minesweeperse.model.field.api._
-import htwg.minesweeperse.model.field.impl._
-import htwg.minesweeperse.model.cell.api.ICell
+import htwg.minesweeperse.model.cell.impl.ICell
+import htwg.minesweeperse.model.fieldComponent.impl._
+import htwg.minesweeperse.model.fieldComponent.impl._
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldBase, implFieldAdvanced}
 
 class RandomFieldCreator extends IFieldFactory:
   override def create(rows: Int, cols: Int): IField =
-    implFieldB.random(rows, cols)
+    implFieldAdvanced.random(rows, cols)
 
   // T
   override def fromCells(cells: Vector[Vector[ICell]]): IField =
-    implFieldA(cells.length, cells.head.length, cells)
-
+    implFieldBase(cells.length, cells.head.length, cells) */

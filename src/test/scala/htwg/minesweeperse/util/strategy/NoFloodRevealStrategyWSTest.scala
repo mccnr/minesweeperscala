@@ -3,24 +3,24 @@ package htwg.minesweeperse.util.strategy
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
 
-import htwg.minesweeperse.model.field.api.IField
-import htwg.minesweeperse.model.cell.api.ICell
-
-import htwg.minesweeperse.util.factory.cellFactory.CellCreator
-import htwg.minesweeperse.util.factory.fieldFactory.RandomFieldCreator
-import htwg.minesweeperse.util.strategy.reveal.impl.NoFloodRevealStrategy
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.implFieldAdvanced
+import htwg.minesweeperse.util.strategy.revealComponent.impl.NoFloodRevealStrategy
 
 class NoFloodRevealStrategyWSTest extends AnyWordSpec {
 
-  // Factories
-  val cellCreator  = CellCreator()
-  val fieldCreator = RandomFieldCreator()
+  // Hilfsfunktionen
+  def emptyCell(): Cell = Cell(0)
+  def mineCell(): Cell  = Cell(1)
 
-  def emptyCell(): ICell = cellCreator.create(0)
-  def mineCell(): ICell  = cellCreator.create(1)
+  def fieldFromCells(cells: Vector[Vector[Cell]]) =
+    new implFieldAdvanced(
+      cells.length,
+      cells.head.length,
+      cells
+    )
 
-  def fieldFromCells(cells: Vector[Vector[ICell]]): IField =
-    fieldCreator.fromCells(cells)
+   // Tests
 
   "A NoFloodRevealStrategy" should {
 
@@ -33,11 +33,10 @@ class NoFloodRevealStrategyWSTest extends AnyWordSpec {
         )
       )
 
-      val strategy = NoFloodRevealStrategy()
-
+      val strategy = new NoFloodRevealStrategy
       val newField = strategy.reveal(field, 0, 0)
 
-      // Minen müssen revealed sein
+      // Alle Minen revealed
       newField.isRevealed(0, 0) shouldBe true
       newField.isRevealed(1, 1) shouldBe true
 
@@ -55,11 +54,10 @@ class NoFloodRevealStrategyWSTest extends AnyWordSpec {
         )
       )
 
-      val strategy = NoFloodRevealStrategy()
-
+      val strategy = new NoFloodRevealStrategy
       val newField = strategy.reveal(field, 0, 0)
 
-      // Nur die angeklickte Zelle
+      // Nur angeklickte Zelle
       newField.isRevealed(0, 0) shouldBe true
 
       // Kein Flood-Fill
@@ -77,11 +75,10 @@ class NoFloodRevealStrategyWSTest extends AnyWordSpec {
         )
       )
 
-      val strategy = NoFloodRevealStrategy()
-
+      val strategy = new NoFloodRevealStrategy
       val result = strategy.reveal(field, 5, 5)
 
-      // Gleiches Objekt (keine Änderung)
+      // Exakt dasselbe Objekt zurück
       result shouldBe field
     }
   }

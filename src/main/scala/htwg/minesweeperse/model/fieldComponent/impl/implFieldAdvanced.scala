@@ -1,48 +1,50 @@
-package htwg.minesweeperse.model.field.impl
-import htwg.minesweeperse.model.cell.api.ICell
-import htwg.minesweeperse.model.field.api.IField
-import htwg.minesweeperse.model.cell._
+package htwg.minesweeperse.model.fieldComponent.impl
 
-case class implFieldA(
- rows: Int,
- cols: Int,
- cells: Vector[Vector[ICell]]
- ) extends IField:
+import com.google.inject.Inject
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.IField
+
+class implFieldAdvanced @Inject()(
+   val rows: Int,
+   val cols: Int,
+   val cells: Vector[Vector[Cell]]
+   ) extends IField {
 
   override def countMinesAround(r: Int, c: Int): Int =
-    val neighbors =
-      for
-        dr <- -1 to 1
-        dc <- -1 to 1
-        if !(dr == 0 && dc == 0)
-        nr = r + dr
-        nc = c + dc
-        if nr >= 0 && nr < rows && nc >= 0 && nc < cols
-      yield cells(nr)(nc)
-    neighbors.count(_.isMine)
+    (for
+      dr <- -1 to 1
+      dc <- -1 to 1
+      if !(dr == 0 && dc == 0)
+      nr = r + dr
+      nc = c + dc
+      if nr >= 0 && nr < rows && nc >= 0 && nc < cols
+    yield cells(nr)(nc)).count(_.isMine)
 
   override def reveal(r: Int, c: Int): IField =
-    if cells(r)(c).isRevealed then this
-    else if cells(r)(c).isMine then revealAllMines()
-    else
+    if (cells(r)(c).isRevealed) this
+    else if (cells(r)(c).isMine) revealAllMines()
+    else {
       val updated = revealOne(r, c)
       if countMinesAround(r, c) == 0 then
         revealEmptyNeighbors(updated, r, c)
       else updated
+    }
 
-  override def revealOne(r: Int, c: Int): IField =
-    val updatedRow =
-      cells(r).updated(c, cells(r)(c).reveal())
-    implFieldA(rows, cols, cells.updated(r, updatedRow))
+  override def revealOne(r: Int, c: Int): IField = {
+    val updatedCells =
+      cells.updated(r, cells(r).updated(c, cells(r)(c).reveal()))
+    new implFieldAdvanced(rows, cols, updatedCells)
+  }
 
-  override def revealAllMines(): IField =
-    val newCells =
+  override def revealAllMines(): IField = {
+    val updatedCells =
       cells.map(_.map(cell =>
         if cell.isMine then cell.reveal() else cell
       ))
-    implFieldA(rows, cols, newCells)
+    new implFieldAdvanced(rows, cols, updatedCells)
+  }
 
-  private def revealEmptyNeighbors(field: IField, r: Int, c: Int): IField =
+  private def revealEmptyNeighbors(field: IField, r: Int, c: Int): IField = {
     var result = field
     for
       dr <- -1 to 1
@@ -55,6 +57,7 @@ case class implFieldA(
     do
       result = result.reveal(nr, nc)
     result
+  }
 
   override def isRevealed(r: Int, c: Int): Boolean =
     cells(r)(c).isRevealed
@@ -68,17 +71,18 @@ case class implFieldA(
   override def isWin: Boolean =
     cells.flatten.forall(c => c.isMine || c.isRevealed)
 
-  override def show(): String =
+  override def show(): String = {
     val border = "-" * (cols * 2 + 3)
     val body =
       cells.zipWithIndex.map { (row, r) =>
         val line =
           row.zipWithIndex.map { (cell, c) =>
             if cell.isRevealed && !cell.isMine then
-              val n = countMinesAround(r, c)
-              cell.display(Some(n))
-            else cell.display(None)
+              cell.display(Some(countMinesAround(r, c)))
+            else cell.display()
           }.mkString(" ")
         s"| $line |"
       }.mkString("\n")
     s"$border\n$body\n$border"
+  }
+}

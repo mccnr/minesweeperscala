@@ -1,9 +1,10 @@
 package htwg.minesweeperse.util.factory.fieldFactory
-import htwg.minesweeperse.model.cell.api.ICell
-import htwg.minesweeperse.model.field.api.IField
+
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.IField
 
 trait IFieldFactory:
   def create(rows: Int, cols: Int): IField
 
   // T
-  def fromCells(cells: Vector[Vector[ICell]]): IField
+  def fromCells(cells: Vector[Vector[Cell]]): IField

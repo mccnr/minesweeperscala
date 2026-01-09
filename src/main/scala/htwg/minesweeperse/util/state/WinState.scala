@@ -1,8 +1,7 @@
 package htwg.minesweeperse.util.state
 
-import htwg.minesweeperse.controller.ControllerResult
 import ControllerResult._
-import htwg.minesweeperse.controller.api.IController
+import htwg.minesweeperse.controllerComponent.impl.IController
 
 class   WinState extends GameState:
   override def name: String = "Win"
