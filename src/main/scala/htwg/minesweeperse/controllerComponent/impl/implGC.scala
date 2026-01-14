@@ -17,7 +17,7 @@ import scala.util.{Failure, Success, Try}
 class implGC @Inject() (
    @Named("medium") private var _field: IField,
    @Named("standard") private val _revealStrategy: IRevealStrategy,
-   @Named("json") private val fileIO: IFileIO // File IO
+   @Named("xml") private val fileIO: IFileIO // File IO
   ) extends Observable, IController {
 
   private val undoManager = UndoManager()
@@ -60,11 +60,13 @@ class implGC @Inject() (
     this.state = state
 
   override def save(): Unit =
-    fileIO.save(field)
-    notifyObservers()
+    fileIO.save(field, timerSeconds)
 
   override def load(): Unit =
-    field = fileIO.load()
+    val (newField, seconds) = fileIO.load()
+    field = newField
+    timerSeconds = seconds
+    notifyObservers()
 
     if field.hasRevealedMine then
       state = GameOverState()
@@ -94,4 +96,10 @@ class implGC @Inject() (
   override def toggleFlag(r: Int, c: Int): Unit =
     field = field.toggleFlag(r, c)
     notifyObservers()
+
+  // Timer speichern
+  private var _timerSeconds: Int = 0
+  override def timerSeconds: Int = _timerSeconds
+  override def timerSeconds_=(s: Int): Unit = _timerSeconds = s
+
 }

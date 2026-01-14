@@ -35,6 +35,11 @@ trait IController:
 
   def toggleFlag(r: Int, c: Int): Unit // flag test
 
+  // Saving Timer
+  def timerSeconds: Int
+  def timerSeconds_=(s: Int): Unit
+
+
 
 
 

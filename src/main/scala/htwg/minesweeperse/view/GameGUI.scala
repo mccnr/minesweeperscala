@@ -1,27 +1,47 @@
 package htwg.minesweeperse.view
 
 import htwg.minesweeperse.controllerComponent.impl.IController
-import scalafx.application.JFXApp3
-import scalafx.scene.Scene
-import scalafx.scene.layout.{GridPane, HBox, VBox}
-import scalafx.scene.control.Button
-import scalafx.geometry.Insets
-import scalafx.application.Platform
-import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.SceneIncludes.jfxScene2sfx
-import scalafx.scene.image.{Image, ImageView}
 import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state._
-import scalafx.scene.input.MouseButton
+
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.application.Platform
+import scalafx.geometry.Insets
+import scalafx.scene.Scene
+import scalafx.scene.SceneIncludes.jfxScene2sfx
+import scalafx.scene.control.{Button, Label}
+import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.input.{MouseButton}
 import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
-import scalafx.scene.control.Label
+import scalafx.scene.layout.{GridPane, HBox, VBox}
+
+import scalafx.animation.{KeyFrame, Timeline}
+import scalafx.util.Duration
 
 class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
   controller.addObserver(this)
 
-  private lazy val mineCounterLabel = new Label("Mines: 0")
+  // UI state
   private var fieldButtons: Vector[Vector[Button]] = Vector()
+
+  // Labels
+  private lazy val mineCounterLabel = new Label("")
+  private lazy val timerLabel = new Label("")
+
+  // Timer State
+  private var secondsPassed: Int = 0
+  private lazy val timer: Timeline = new Timeline {
+    cycleCount = Timeline.Indefinite
+    keyFrames = Seq(
+      KeyFrame(Duration(1000), onFinished = _ => {
+        secondsPassed += 1
+        controller.timerSeconds = secondsPassed
+        timerLabel.text = s"Time: $secondsPassed"
+      })
+    )
+  }
 
   // Styles
   private val windowStyle =
@@ -33,10 +53,9 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       "-fx-border-width: 2;" +
       "-fx-padding: 6;"
 
-  // Hidden tile
   private val tileHiddenStyle =
     "-fx-background-color: #c0c0c0;" +
-      "-fx-border-color: #ffffff #808080 #808080 #ffffff;" + // top right bottom left
+      "-fx-border-color: #ffffff #808080 #808080 #ffffff;" +
       "-fx-border-width: 2;" +
       "-fx-font-size: 18px;" +
       "-fx-font-weight: bold;" +
@@ -44,7 +63,6 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       "-fx-background-insets: 0;" +
       "-fx-border-insets: 0;"
 
-  // Revealed tile = flat
   private val tileRevealedStyle =
     "-fx-background-color: #d6d6d6;" +
       "-fx-border-color: #a0a0a0;" +
@@ -61,7 +79,14 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       "-fx-border-width: 3;" +
       "-fx-padding: 6;"
 
+  // Start
   override def start(): Unit =
+    // init timer state from controller
+    secondsPassed = controller.timerSeconds
+    timerLabel.text = s"Time: $secondsPassed"
+
+    refreshMineCounter()
+
     stage = new PrimaryStage:
       title = "Minesweeper"
       scene = new Scene:
@@ -73,10 +98,12 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
             buildToolbar(),
             buildGrid()
           )
-          refreshMineCounter()
+
+    // start timer after Stage is built
+    timer.play()
 
   // Toolbar
-  private def buildToolbar() =
+  private def buildToolbar(): HBox =
     new HBox:
       spacing = 8
       padding = Insets(5)
@@ -96,14 +123,22 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
       val loadBtn = new Button("Load"):
         minWidth = 80
-        onAction = _ => controller.load()
+        onAction = _ =>
+          controller.load()
 
-      val minesLeftLabel = mineCounterLabel
-      minesLeftLabel.style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+          // sync timer after load
+          secondsPassed = controller.timerSeconds
+          timerLabel.text = s"Time: $secondsPassed"
 
-      children = Seq(undoBtn, redoBtn, saveBtn, loadBtn, minesLeftLabel)
+          // update mines label immediately
+          refreshMineCounter()
 
-  // Field
+      mineCounterLabel.style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+      timerLabel.style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+
+      children = Seq(undoBtn, redoBtn, saveBtn, loadBtn, mineCounterLabel, timerLabel)
+
+  // Grid
   private def buildGrid(): GridPane =
     val gp = new GridPane:
       padding = Insets(5)
@@ -118,8 +153,9 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
             minWidth = 32
             minHeight = 32
 
-            // ✅ initial style
-            style = if controller.field.isRevealed(r, c) then tileRevealedStyle else tileHiddenStyle
+            style =
+              if controller.field.isRevealed(r, c) then tileRevealedStyle
+              else tileHiddenStyle
 
             graphic = cellGraphic(r, c)
             text = ""
@@ -129,9 +165,9 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
                 case _: GameOverState | _: WinState => ()
                 case _ =>
                   if e.button == MouseButton.Secondary then
-                    controller.toggleFlag(r, c) // RIGHT CLICK = FLAG
+                    controller.toggleFlag(r, c)
                   else if e.button == MouseButton.Primary then
-                    controller.processMove(r, c) // LEFT CLICK = REVEAL
+                    controller.processMove(r, c)
 
           gp.add(btn, c, r)
           btn
@@ -142,7 +178,6 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
   // Cell Graphic
   private def cellGraphic(r: Int, c: Int): ImageView =
-
     val field = controller.field
 
     val img =
@@ -162,19 +197,22 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       preserveRatio = true
     }
 
+  // Mine Counter
   private def refreshMineCounter(): Unit =
-   val minesLeft = controller.field.totalMines - controller.field.totalFlags
-   mineCounterLabel.text = s"Mines: $minesLeft"
+    val minesLeft = controller.field.totalMines - controller.field.totalFlags
+    mineCounterLabel.text = s"Mines: $minesLeft"
 
   // Observer Update
   override def update(): Unit =
     Platform.runLater {
+
+      controller.state match
+        case _: GameOverState | _: WinState =>
+          timer.stop()
+        case _ =>
+          timer.play()
+
       refreshMineCounter()
-
-      val minesLeft =
-        controller.field.totalMines - controller.field.totalFlags
-
-      mineCounterLabel.text = s"Mines: $minesLeft"
 
       if fieldButtons.isEmpty ||
         fieldButtons.length != controller.field.rows ||
@@ -200,3 +238,4 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
             btn.graphic = cellGraphic(r, c)
             btn.text = ""
     }
+
