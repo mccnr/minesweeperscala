@@ -24,3 +24,7 @@ class UndoManager:
         head.redoStep()
         redoStack = tail
         undoStack = head :: undoStack
+
+  def clear(): Unit =
+    undoStack = Nil
+    redoStack = Nil

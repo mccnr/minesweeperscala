@@ -1,7 +1,7 @@
 <minesweeper>
   <rows>8</rows>
   <cols>8</cols>
-  <seconds>16</seconds>
+  <seconds>28</seconds>
   <cells>
     <cell>
       <row>0</row>
@@ -13,7 +13,7 @@
     <cell>
       <row>0</row>
       <col>1</col>
-      <value>0</value>
+      <value>1</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
@@ -28,32 +28,32 @@
       <row>0</row>
       <col>3</col>
       <value>0</value>
-      <revealed>false</revealed>
+      <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>0</row>
       <col>4</col>
-      <value>0</value>
+      <value>1</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>0</row>
       <col>5</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>0</row>
-      <col>6</col>
       <value>0</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>0</row>
+      <col>6</col>
+      <value>0</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>0</row>
       <col>7</col>
       <value>0</value>
       <revealed>false</revealed>
@@ -63,49 +63,49 @@
       <row>1</row>
       <col>0</col>
       <value>0</value>
-      <revealed>false</revealed>
+      <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>1</row>
       <col>1</col>
       <value>0</value>
-      <revealed>false</revealed>
+      <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>1</row>
       <col>2</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>1</row>
-      <col>3</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>1</row>
-      <col>4</col>
       <value>1</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>1</row>
-      <col>5</col>
+      <col>3</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>1</row>
-      <col>6</col>
+      <col>4</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>1</row>
+      <col>5</col>
+      <value>1</value>
+      <revealed>false</revealed>
+      <flagged>true</flagged>
+    </cell>
+    <cell>
+      <row>1</row>
+      <col>6</col>
+      <value>1</value>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
@@ -118,8 +118,8 @@
     <cell>
       <row>2</row>
       <col>0</col>
-      <value>1</value>
-      <revealed>false</revealed>
+      <value>0</value>
+      <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
@@ -132,8 +132,8 @@
     <cell>
       <row>2</row>
       <col>2</col>
-      <value>1</value>
-      <revealed>false</revealed>
+      <value>0</value>
+      <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
@@ -146,22 +146,22 @@
     <cell>
       <row>2</row>
       <col>4</col>
-      <value>0</value>
-      <revealed>true</revealed>
+      <value>1</value>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>2</row>
       <col>5</col>
       <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
+      <revealed>false</revealed>
+      <flagged>true</flagged>
     </cell>
     <cell>
       <row>2</row>
       <col>6</col>
       <value>0</value>
-      <revealed>false</revealed>
+      <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
@@ -175,7 +175,7 @@
       <row>3</row>
       <col>0</col>
       <value>0</value>
-      <revealed>false</revealed>
+      <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
@@ -203,181 +203,181 @@
       <row>3</row>
       <col>4</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>3</row>
       <col>5</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>3</row>
       <col>6</col>
-      <value>1</value>
+      <value>0</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>3</row>
       <col>7</col>
-      <value>0</value>
-      <revealed>false</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>4</row>
-      <col>0</col>
       <value>1</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>4</row>
-      <col>1</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>4</row>
-      <col>2</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>4</row>
-      <col>3</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>4</row>
-      <col>4</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>4</row>
-      <col>5</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>4</row>
-      <col>6</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>4</row>
-      <col>7</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>5</row>
       <col>0</col>
       <value>0</value>
       <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
-      <row>5</row>
+      <row>4</row>
       <col>1</col>
       <value>0</value>
       <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
-      <row>5</row>
+      <row>4</row>
       <col>2</col>
       <value>0</value>
       <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
-      <row>5</row>
+      <row>4</row>
       <col>3</col>
       <value>0</value>
       <revealed>true</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
-      <row>5</row>
+      <row>4</row>
       <col>4</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
-      <row>5</row>
+      <row>4</row>
       <col>5</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
-      <row>5</row>
+      <row>4</row>
       <col>6</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>5</row>
-      <col>7</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>6</row>
-      <col>0</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>6</row>
-      <col>1</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>6</row>
-      <col>2</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>6</row>
-      <col>3</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>6</row>
-      <col>4</col>
-      <value>0</value>
-      <revealed>true</revealed>
-      <flagged>false</flagged>
-    </cell>
-    <cell>
-      <row>6</row>
-      <col>5</col>
       <value>1</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>4</row>
+      <col>7</col>
+      <value>0</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>0</col>
+      <value>0</value>
+      <revealed>true</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>1</col>
+      <value>0</value>
+      <revealed>true</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>2</col>
+      <value>0</value>
+      <revealed>true</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>3</col>
+      <value>1</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>4</col>
+      <value>0</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>5</col>
+      <value>0</value>
+      <revealed>true</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>6</col>
+      <value>0</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>5</row>
+      <col>7</col>
+      <value>0</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>6</row>
+      <col>0</col>
+      <value>0</value>
+      <revealed>true</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>6</row>
+      <col>1</col>
+      <value>0</value>
+      <revealed>true</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>6</row>
+      <col>2</col>
+      <value>0</value>
+      <revealed>true</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>6</row>
+      <col>3</col>
+      <value>0</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>6</row>
+      <col>4</col>
+      <value>1</value>
+      <revealed>false</revealed>
+      <flagged>false</flagged>
+    </cell>
+    <cell>
+      <row>6</row>
+      <col>5</col>
+      <value>0</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
@@ -385,14 +385,14 @@
       <row>6</row>
       <col>6</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>6</row>
       <col>7</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
@@ -412,28 +412,28 @@
     <cell>
       <row>7</row>
       <col>2</col>
-      <value>0</value>
-      <revealed>true</revealed>
+      <value>1</value>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>7</row>
       <col>3</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>7</row>
       <col>4</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>7</row>
       <col>5</col>
-      <value>1</value>
+      <value>0</value>
       <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
@@ -441,14 +441,14 @@
       <row>7</row>
       <col>6</col>
       <value>0</value>
-      <revealed>true</revealed>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
     <cell>
       <row>7</row>
       <col>7</col>
-      <value>0</value>
-      <revealed>true</revealed>
+      <value>1</value>
+      <revealed>false</revealed>
       <flagged>false</flagged>
     </cell>
   </cells>

@@ -39,6 +39,10 @@ trait IController:
   def timerSeconds: Int
   def timerSeconds_=(s: Int): Unit
 
+  // Reset
+  def restart(): Unit
+
+
 
 
 

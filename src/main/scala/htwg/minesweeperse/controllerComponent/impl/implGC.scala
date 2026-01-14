@@ -102,4 +102,23 @@ class implGC @Inject() (
   override def timerSeconds: Int = _timerSeconds
   override def timerSeconds_=(s: Int): Unit = _timerSeconds = s
 
+  // Reset
+  override def restart(): Unit =
+    // neues Spielfeld erzeugen (gleiche Größe wie vorher)
+    val rows = field.rows
+    val cols = field.cols
+
+    field = new htwg.minesweeperse.model.fieldComponent.impl.implFieldBase(rows, cols)
+
+    // Undo/Redo zurücksetzen
+    undoManager.clear()
+
+    // State,  Result reset
+    state = PlayingState()
+    lastResult = ControllerResult.Revealed
+    PlayingState().playing = true
+
+    // Timer reset
+    timerSeconds = 0
+    notifyObservers()
 }
