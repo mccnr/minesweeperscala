@@ -14,11 +14,13 @@ import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state._
 import scalafx.scene.input.MouseButton
 import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
+import scalafx.scene.control.Label
 
 class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
   controller.addObserver(this)
 
+  private lazy val mineCounterLabel = new Label("Mines: 0")
   private var fieldButtons: Vector[Vector[Button]] = Vector()
 
   // Styles
@@ -71,6 +73,7 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
             buildToolbar(),
             buildGrid()
           )
+          refreshMineCounter()
 
   // Toolbar
   private def buildToolbar() =
@@ -95,7 +98,10 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
         minWidth = 80
         onAction = _ => controller.load()
 
-      children = Seq(undoBtn, redoBtn, saveBtn, loadBtn)
+      val minesLeftLabel = mineCounterLabel
+      minesLeftLabel.style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+
+      children = Seq(undoBtn, redoBtn, saveBtn, loadBtn, minesLeftLabel)
 
   // Field
   private def buildGrid(): GridPane =
@@ -156,9 +162,19 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       preserveRatio = true
     }
 
+  private def refreshMineCounter(): Unit =
+   val minesLeft = controller.field.totalMines - controller.field.totalFlags
+   mineCounterLabel.text = s"Mines: $minesLeft"
+
   // Observer Update
   override def update(): Unit =
     Platform.runLater {
+      refreshMineCounter()
+
+      val minesLeft =
+        controller.field.totalMines - controller.field.totalFlags
+
+      mineCounterLabel.text = s"Mines: $minesLeft"
 
       if fieldButtons.isEmpty ||
         fieldButtons.length != controller.field.rows ||

@@ -110,4 +110,11 @@ class implFieldAdvanced @Inject()(
 
     new implFieldAdvanced(rows, cols, cells.updated(r, updatedRow))
 
+  // Anzahl Mines, Flags
+  override def totalMines: Int =
+    cells.flatten.count(_.isMine)
+
+  override def totalFlags: Int =
+    cells.flatten.count(_.isFlagged)
+  
 }

@@ -27,3 +27,9 @@ trait IField:
   def toggleFlag(r: Int, c: Int): IField
   def isFlagged(r: Int, c: Int): Boolean
   def unflagAndRevealOne(r: Int, c: Int): IField
+
+  // Anzahl Minen, Flags
+
+  def totalMines: Int
+  def totalFlags: Int
+
