@@ -22,3 +22,8 @@ trait IField:
   def countMinesAround(r: Int, c: Int): Int
 
   def show(): String
+
+  // Flag test
+  def toggleFlag(r: Int, c: Int): IField
+  def isFlagged(r: Int, c: Int): Boolean
+  def unflagAndRevealOne(r: Int, c: Int): IField

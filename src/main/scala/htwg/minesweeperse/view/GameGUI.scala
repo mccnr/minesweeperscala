@@ -12,6 +12,8 @@ import scalafx.scene.SceneIncludes.jfxScene2sfx
 import scalafx.scene.image.{Image, ImageView}
 import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state._
+import scalafx.scene.input.MouseButton
+import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
 
 class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
@@ -19,23 +21,63 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
   private var fieldButtons: Vector[Vector[Button]] = Vector()
 
+  // Styles
+  private val windowStyle =
+    "-fx-background-color: #c0c0c0;"
+
+  private val toolbarStyle =
+    "-fx-background-color: #bdbdbd;" +
+      "-fx-border-color: #808080;" +
+      "-fx-border-width: 2;" +
+      "-fx-padding: 6;"
+
+  // Hidden tile
+  private val tileHiddenStyle =
+    "-fx-background-color: #c0c0c0;" +
+      "-fx-border-color: #ffffff #808080 #808080 #ffffff;" + // top right bottom left
+      "-fx-border-width: 2;" +
+      "-fx-font-size: 18px;" +
+      "-fx-font-weight: bold;" +
+      "-fx-padding: 0;" +
+      "-fx-background-insets: 0;" +
+      "-fx-border-insets: 0;"
+
+  // Revealed tile = flat
+  private val tileRevealedStyle =
+    "-fx-background-color: #d6d6d6;" +
+      "-fx-border-color: #a0a0a0;" +
+      "-fx-border-width: 1;" +
+      "-fx-font-size: 18px;" +
+      "-fx-font-weight: bold;" +
+      "-fx-padding: 0;" +
+      "-fx-background-insets: 0;" +
+      "-fx-border-insets: 0;"
+
+  private val gridPanelStyle =
+    "-fx-background-color: #bdbdbd;" +
+      "-fx-border-color: #808080;" +
+      "-fx-border-width: 3;" +
+      "-fx-padding: 6;"
+
   override def start(): Unit =
     stage = new PrimaryStage:
       title = "Minesweeper"
       scene = new Scene:
         root = new VBox:
-          spacing = 10
+          spacing = 8
           padding = Insets(10)
+          style = windowStyle
           children = Seq(
             buildToolbar(),
             buildGrid()
           )
 
-  // Toolbar mit undo/redo Buttons
+  // Toolbar
   private def buildToolbar() =
     new HBox:
-      spacing = 10
+      spacing = 8
       padding = Insets(5)
+      style = toolbarStyle
 
       val undoBtn = new Button("Undo"):
         minWidth = 80
@@ -45,61 +87,45 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
         minWidth = 80
         onAction = _ => controller.redo()
 
-      children = Seq(undoBtn, redoBtn)
+      val saveBtn = new Button("Save"):
+        minWidth = 80
+        onAction = _ => controller.save()
 
-  // Baut Spielfeld
+      val loadBtn = new Button("Load"):
+        minWidth = 80
+        onAction = _ => controller.load()
+
+      children = Seq(undoBtn, redoBtn, saveBtn, loadBtn)
+
+  // Field
   private def buildGrid(): GridPane =
     val gp = new GridPane:
-      padding = Insets(10)
-      hgap = 5
-      vgap = 5
-
-    /* fieldButtons =
-      controller.fieldComponent.cells.zipWithIndex.map { (row, r) => // Für jede Zeile wird eine neue Zeile von Buttons erzeugt
-        row.zipWithIndex.map { (cell, c) => // Spaltennr
-          val btn = new Button:
-            minWidth = 40
-            minHeight = 40
-
-            style = "-fx-padding: 0; -fx-background-insets: 0; -fx-background-radius: 0;"
-
-            graphic = cellGraphic(r, c)
-            text = ""
-
-            onMouseEntered = _ => style = "-fx-background-color: lightgray;"
-            onMouseExited = _ => style = "-fx-background-color: transparent;"
-
-            onAction = _ =>
-              controller.state match
-                case _: GameOverState | _: WinState =>
-                  () // blockiert wie TUI
-                case _ =>
-                  controller.processMove(r, c)
-
-          gp.add(btn, c, r) // Button aufs Grid setzen, richtigen pos einfügen
-          btn
-        }
-      } */
+      padding = Insets(5)
+      hgap = 0
+      vgap = 0
+      style = gridPanelStyle
 
     fieldButtons =
       (0 until controller.field.rows).map { r =>
         (0 until controller.field.cols).map { c =>
           val btn = new Button:
-            minWidth = 40
-            minHeight = 40
+            minWidth = 32
+            minHeight = 32
 
-            style = "-fx-padding: 0; -fx-background-insets: 0; -fx-background-radius: 0;"
+            // ✅ initial style
+            style = if controller.field.isRevealed(r, c) then tileRevealedStyle else tileHiddenStyle
 
             graphic = cellGraphic(r, c)
             text = ""
 
-            onMouseEntered = _ => style = "-fx-background-color: lightgray;"
-            onMouseExited = _ => style = "-fx-background-color: transparent;"
-
-            onAction = _ =>
+            onMouseClicked = e =>
               controller.state match
                 case _: GameOverState | _: WinState => ()
-                case _ => controller.processMove(r, c)
+                case _ =>
+                  if e.button == MouseButton.Secondary then
+                    controller.toggleFlag(r, c) // RIGHT CLICK = FLAG
+                  else if e.button == MouseButton.Primary then
+                    controller.processMove(r, c) // LEFT CLICK = REVEAL
 
           gp.add(btn, c, r)
           btn
@@ -108,45 +134,53 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
     gp
 
+  // Cell Graphic
   private def cellGraphic(r: Int, c: Int): ImageView =
-    //val cell = controller.fieldComponent.cells(r)(c)
+
     val field = controller.field
 
     val img =
-      if !field.isRevealed(r, c) then // if !cell.revealed then
+      if field.isFlagged(r, c) && !field.isRevealed(r, c) then
+        new Image("icons/flag.png")
+      else if !field.isRevealed(r, c) then
         new Image("icons/hidden.png")
-      else if field.isMine(r, c) then // if cell.isMine then
+      else if field.isMine(r, c) then
         new Image("icons/mine.png")
       else
-        val count = field.countMinesAround(r, c)   // val count = controller.fieldComponent.countMinesAround(r, c)
+        val count = field.countMinesAround(r, c)
         new Image(s"icons/n$count.png")
 
     new ImageView(img) {
-      fitWidth = 40
-      fitHeight = 40
+      fitWidth = 28
+      fitHeight = 28
       preserveRatio = true
     }
 
-  // Observer update, wird vom Controller aufgerufen
+  // Observer Update
   override def update(): Unit =
     Platform.runLater {
 
-      // Wenn sich die Feldgröße geändert hat, layout neu bauen
       if fieldButtons.isEmpty ||
         fieldButtons.length != controller.field.rows ||
         fieldButtons.head.length != controller.field.cols
       then
         stage.scene().root = new VBox:
-          spacing = 10
+          spacing = 8
           padding = Insets(10)
+          style = windowStyle
           children = Seq(
             buildToolbar(),
             buildGrid()
           )
-      else // Aktualisieren
+      else
         for r <- 0 until controller.field.rows do
           for c <- 0 until controller.field.cols do
             val btn = fieldButtons(r)(c)
+
+            btn.style =
+              if controller.field.isRevealed(r, c) then tileRevealedStyle
+              else tileHiddenStyle
+
             btn.graphic = cellGraphic(r, c)
             btn.text = ""
     }

@@ -6,3 +6,5 @@ case class Move(r: Int, c: Int) extends InputCommand
 case object UndoCmd extends InputCommand // Exakt eine Instanz jeweils
 case object RedoCmd extends InputCommand
 case object InvalidCmd extends InputCommand
+case object SaveCmd extends InputCommand
+case object LoadCmd extends InputCommand

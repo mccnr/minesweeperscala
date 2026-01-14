@@ -8,8 +8,8 @@ import htwg.minesweeperse.model.fieldComponent.impl.IField
 import scala.util.Random
 
 class implFieldBase @Inject()(
-  /* @Named("Rows")*/ val rows: Int,
-  /*@Named("Cols")*/ val cols: Int
+   val rows: Int,
+   val cols: Int
   ) extends IField {
 
    // Zellen intern erzeugen
@@ -30,7 +30,8 @@ class implFieldBase @Inject()(
     yield cells(nr)(nc)).count(_.isMine)
 
   override def reveal(r: Int, c: Int): IField =
-    if (cells(r)(c).isRevealed) this
+    if (cells(r)(c).isFlagged) this // flag test
+    else if (cells(r)(c).isRevealed) this
     else if (cells(r)(c).isMine) revealAllMines()
     else
       val updated = revealOne(r, c)
@@ -91,5 +92,24 @@ class implFieldBase @Inject()(
       }.mkString("\n")
     s"$border\n$body\n$border"
   }
+
+  override def toggleFlag(r: Int, c: Int): IField =
+    if r < 0 || r >= rows || c < 0 || c >= cols then this
+    else
+      val updatedRow = cells(r).updated(c, cells(r)(c).toggleFlag())
+      new implFieldAdvanced(rows, cols, cells.updated(r, updatedRow))
+
+  override def isFlagged(r: Int, c: Int): Boolean =
+    cells(r)(c).isFlagged
+
+  override def unflagAndRevealOne(r: Int, c: Int): IField =
+    val updatedCell =
+      cells(r)(c).toggleFlag().reveal() // Flag weg + revealed
+
+    val updatedRow =
+      cells(r).updated(c, updatedCell)
+
+    new implFieldAdvanced(rows, cols, cells.updated(r, updatedRow))
+
 }
 

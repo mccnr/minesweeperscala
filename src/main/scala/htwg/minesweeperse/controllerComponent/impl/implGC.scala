@@ -1,20 +1,23 @@
-package htwg.minesweeperse.controllerComponent.impl
+package htwg.minesweeperse.controllerComponent
 
 import com.google.inject.Inject
 import htwg.minesweeperse.controllerComponent.impl.IController
-import htwg.minesweeperse.util.state.ControllerResult._
+import htwg.minesweeperse.util.state.ControllerResult.*
 import htwg.minesweeperse.model.fieldComponent.impl.IField
 import htwg.minesweeperse.util.state.*
 import htwg.minesweeperse.util.command.*
 import htwg.minesweeperse.util.observer.Observable
 import com.google.inject.name.Named
+import htwg.minesweeperse.MinesweeperModule
+import htwg.minesweeperse.model.fileIoComponent.IFileIO
 import htwg.minesweeperse.util.strategy.revealComponent.impl.IRevealStrategy
 
-import scala.util.{Try, Success, Failure}
+import scala.util.{Failure, Success, Try}
 
 class implGC @Inject() (
-   @Named("small") private var _field: IField,
-   @Named("standard") private val _revealStrategy: IRevealStrategy
+   @Named("medium") private var _field: IField,
+   @Named("standard") private val _revealStrategy: IRevealStrategy,
+   @Named("json") private val fileIO: IFileIO // File IO
   ) extends Observable, IController {
 
   private val undoManager = UndoManager()
@@ -36,6 +39,7 @@ class implGC @Inject() (
     Try {
       undoManager.doStep(RevealCommand(this, r, c))
       _state.processMove(r, c, this)
+      syncStateWithField()
     } match
       case Success(_) => notifyObservers()
       case Failure(_) =>
@@ -44,12 +48,50 @@ class implGC @Inject() (
 
   override def undo(): Unit =
     undoManager.undo()
+    syncStateWithField() // TEST
     notifyObservers()
 
   override def redo(): Unit =
     undoManager.redo()
+    syncStateWithField() // TEST
     notifyObservers()
 
   override def changeState(state: GameState): Unit =
     this.state = state
+
+  override def save(): Unit =
+    fileIO.save(field)
+    notifyObservers()
+
+  override def load(): Unit =
+    field = fileIO.load()
+
+    if field.hasRevealedMine then
+      state = GameOverState()
+      lastResult = ControllerResult.GameOver
+
+    else if field.isWin then
+      state = WinState()
+      lastResult = ControllerResult.Win
+
+    else
+      state = PlayingState()
+      lastResult = ControllerResult.Revealed
+
+    notifyObservers()
+
+  override def syncStateWithField(): Unit = //TEST
+    if field.hasRevealedMine then
+      state = GameOverState()
+      lastResult = ControllerResult.GameOver
+    else if field.isWin then
+      state = WinState()
+      lastResult = ControllerResult.Win
+    else
+      state = PlayingState()
+
+  // Flag test
+  override def toggleFlag(r: Int, c: Int): Unit =
+    field = field.toggleFlag(r, c)
+    notifyObservers()
 }

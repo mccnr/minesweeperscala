@@ -1,7 +1,7 @@
 package htwg.minesweeperse.util.template
 
 import htwg.minesweeperse.controllerComponent.impl.IController
-import htwg.minesweeperse.util.command.{InputCommand, InvalidCmd, Move, RedoCmd, UndoCmd}
+import htwg.minesweeperse.util.command.{InputCommand, InvalidCmd, Move, RedoCmd, UndoCmd, SaveCmd, LoadCmd}
 import htwg.minesweeperse.util.state.{ControllerResult, GameOverState, PlayingState, WinState}
 
 abstract class BaseView(controller: IController):
@@ -41,6 +41,12 @@ abstract class BaseView(controller: IController):
 
       case Some(RedoCmd) =>
         controller.redo()
+
+      case Some(SaveCmd) =>
+        controller.save()
+
+      case Some(LoadCmd) =>
+        controller.load()
 
       case Some(InvalidCmd) =>
         handleInvalidInput(raw)

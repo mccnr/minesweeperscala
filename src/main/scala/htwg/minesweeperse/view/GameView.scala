@@ -4,7 +4,7 @@ import htwg.minesweeperse.util.state.ControllerResult.{GameOver, OutOfBounds, Re
 import htwg.minesweeperse.util.template.BaseView
 import htwg.minesweeperse.controllerComponent
 import htwg.minesweeperse.controllerComponent.impl.IController
-import htwg.minesweeperse.util.command.{InputCommand, Move, RedoCmd, UndoCmd}
+import htwg.minesweeperse.util.command.{InputCommand, Move, RedoCmd, UndoCmd, SaveCmd, LoadCmd}
 import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state.ControllerResult
 import com.google.inject.Inject
@@ -39,6 +39,8 @@ class GameView (
     s.trim.toLowerCase match
       case "undo" => Some(UndoCmd)
       case "redo" => Some(RedoCmd)
+      case "save" => Some(SaveCmd)
+      case "load" => Some(LoadCmd)
       case str =>
         val parts = str.split(" ")
         if parts.length != 2 then None

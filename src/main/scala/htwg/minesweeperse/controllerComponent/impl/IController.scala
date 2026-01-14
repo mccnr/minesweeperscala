@@ -28,4 +28,13 @@ trait IController:
   def addObserver(o: Observer): Unit
   def removeObserver(o: Observer): Unit
 
+  def save(): Unit
+  def load(): Unit
+
+  def syncStateWithField(): Unit
+
+  def toggleFlag(r: Int, c: Int): Unit // flag test
+
+
+
 
