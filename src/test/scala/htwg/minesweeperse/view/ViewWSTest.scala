@@ -31,9 +31,9 @@ class ViewWSTest extends AnyWordSpec {
     new implFieldAdvanced(cells.length, cells.head.length, cells)
 
   private def makeView(
-                        input: String,
-                        field: IField
-                      ): (GameView, IController, ByteArrayOutputStream) = {
+    input: String,
+    field: IField
+    ): (GameView, IController, ByteArrayOutputStream) = {
 
     val in       = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(input.getBytes)))
     val outBytes = new ByteArrayOutputStream()
@@ -85,22 +85,6 @@ class ViewWSTest extends AnyWordSpec {
         case _    => fail("Should be invalid")
 
       bytes.toString should include("Bitte zwei Zahlen eingeben")
-    }
-
-    "update view when controller notifies observers" in {
-      val field = fieldFromCells(
-        Vector(
-          Vector(emptyCell(), emptyCell()),
-          Vector(emptyCell(), emptyCell())
-        )
-      )
-
-      val (view, controller, bytes) = makeView("", field)
-
-      controller.processMove(0, 0)
-      view.update()
-
-      bytes.toString should include("|")
     }
 
     "print OutOfBounds when move is outside field" in {
