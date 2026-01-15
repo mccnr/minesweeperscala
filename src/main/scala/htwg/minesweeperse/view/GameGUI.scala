@@ -114,12 +114,6 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
     secondsPassed = controller.timerSeconds
     timerLabel.text = s"Time: $secondsPassed"
 
-  private def resetTimer(): Unit =
-    secondsPassed = 0
-    controller.timerSeconds = 0
-    timerLabel.text = "Time: 0"
-    timer.play()
-
   // Smiley Graphics
   private def smileyGraphic(): ImageView =
     val path =
@@ -200,8 +194,7 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       graphic = smileyGraphic()
       onAction = _ =>
         controller.restart()
-        resetTimer()
-        refreshMineCounter()
+        //refreshMineCounter()
 
     val buttonsRow = new HBox:
       spacing = 10

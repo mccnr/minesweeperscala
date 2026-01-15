@@ -4,7 +4,7 @@ import htwg.minesweeperse.util.state.ControllerResult.{GameOver, OutOfBounds, Re
 import htwg.minesweeperse.util.template.BaseView
 import htwg.minesweeperse.controllerComponent
 import htwg.minesweeperse.controllerComponent.impl.IController
-import htwg.minesweeperse.util.command.{InputCommand, Move, RedoCmd, UndoCmd, SaveCmd, LoadCmd}
+import htwg.minesweeperse.util.command.{ExitCmd, InputCommand, LoadCmd, Move, RedoCmd, RestartCmd, SaveCmd, UndoCmd}
 import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state.ControllerResult
 import com.google.inject.Inject
@@ -19,9 +19,30 @@ class GameView (
 
   controller.addObserver(this)
 
-  override def update(): Unit =
+   /*override def update(): Unit =
     out.println(controller.field.show())
-    handleResult(controller.lastResult)
+    handleResult(controller.lastResult)*/
+
+  // Temporary Fix for duplicated outputs
+  private var lastShownField: String = ""
+  private var lastShownResult: Option[ControllerResult] = None
+
+  override def update(): Unit = {
+    val currentField = controller.field.show()
+
+    // Feld nur drucken wenn es sich geändert hat
+    if (currentField != lastShownField) {
+      println(currentField)
+      lastShownField = currentField
+    }
+
+    // Result nur drucken wenn es sich geändert hat
+    val currentResult = controller.lastResult
+    if (!lastShownResult.contains(currentResult)) {
+      handleResult(currentResult)
+      lastShownResult = Some(currentResult)
+    }
+  }
 
   override def showWelcome(): Unit =
     out.println("Willkommen bei Minesweeper")
@@ -41,6 +62,8 @@ class GameView (
       case "redo" => Some(RedoCmd)
       case "save" => Some(SaveCmd)
       case "load" => Some(LoadCmd)
+      case "exit" => Some(ExitCmd)
+      case "restart" => Some(RestartCmd)
       case str =>
         val parts = str.split(" ")
         if parts.length != 2 then None

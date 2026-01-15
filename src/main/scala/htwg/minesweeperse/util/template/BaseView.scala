@@ -1,8 +1,9 @@
 package htwg.minesweeperse.util.template
 
 import htwg.minesweeperse.controllerComponent.impl.IController
-import htwg.minesweeperse.util.command.{InputCommand, InvalidCmd, Move, RedoCmd, UndoCmd, SaveCmd, LoadCmd}
+import htwg.minesweeperse.util.command.{ExitCmd, InputCommand, InvalidCmd, LoadCmd, Move, RedoCmd, SaveCmd, UndoCmd, RestartCmd}
 import htwg.minesweeperse.util.state.{ControllerResult, GameOverState, PlayingState, WinState}
+import scalafx.application.Platform
 
 abstract class BaseView(controller: IController):
 
@@ -50,6 +51,14 @@ abstract class BaseView(controller: IController):
 
       case Some(InvalidCmd) =>
         handleInvalidInput(raw)
+
+      case Some(ExitCmd) =>
+        Platform.exit()
+
+      case Some(RestartCmd) =>
+        controller.restart()
+        //resetTimer()
+        //refreshMineCounter()
 
   // Schritte
   def showWelcome(): Unit

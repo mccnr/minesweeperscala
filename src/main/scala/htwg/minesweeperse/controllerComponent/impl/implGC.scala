@@ -8,7 +8,6 @@ import htwg.minesweeperse.util.state.*
 import htwg.minesweeperse.util.command.*
 import htwg.minesweeperse.util.observer.Observable
 import com.google.inject.name.Named
-import htwg.minesweeperse.MinesweeperModule
 import htwg.minesweeperse.model.fileIoComponent.IFileIO
 import htwg.minesweeperse.util.strategy.revealComponent.impl.IRevealStrategy
 
@@ -48,12 +47,12 @@ class implGC @Inject() (
 
   override def undo(): Unit =
     undoManager.undo()
-    syncStateWithField() // TEST
+    syncStateWithField()
     notifyObservers()
 
   override def redo(): Unit =
     undoManager.redo()
-    syncStateWithField() // TEST
+    syncStateWithField()
     notifyObservers()
 
   override def changeState(state: GameState): Unit =

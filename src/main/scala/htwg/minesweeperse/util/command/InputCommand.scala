@@ -8,3 +8,5 @@ case object RedoCmd extends InputCommand
 case object InvalidCmd extends InputCommand
 case object SaveCmd extends InputCommand
 case object LoadCmd extends InputCommand
+case object ExitCmd extends InputCommand
+case object RestartCmd extends InputCommand
