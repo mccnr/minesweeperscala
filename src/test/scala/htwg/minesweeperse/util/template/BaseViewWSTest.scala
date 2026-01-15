@@ -2,26 +2,28 @@ package htwg.minesweeperse.util.template
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
-
-import htwg.minesweeperse.controllerComponent.impl.implGC
 import htwg.minesweeperse.controllerComponent.impl.IController
-
+import htwg.minesweeperse.controllerComponent.impl.implGC
 import htwg.minesweeperse.model.cell.Cell
-import htwg.minesweeperse.model.fieldComponent.impl.implFieldAdvanced
-
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
+import htwg.minesweeperse.model.fileIoComponent.IFileIO
 import htwg.minesweeperse.util.command.*
 import htwg.minesweeperse.util.state.*
 import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
-import htwg.minesweeperse.util.command.InputCommand
-import htwg.minesweeperse.util.state.ControllerResult
 
 class BaseViewWSTest extends AnyWordSpec {
+  
+  private object DummyFileIO extends IFileIO {
+    override def save(field: IField, seconds: Int): Unit = ()
+    override def load(): (IField, Int) =
+      (new implFieldAdvanced(1, 1, Vector(Vector(Cell(0)))), 0)
+  }
 
-  // Hilfsfunktionen
+  // Hilfsfunktion: Dummy Controller erzeugen
   def dummyController(): IController = {
     val cells = Vector.fill(2, 2)(Cell(0))
     val field = new implFieldAdvanced(2, 2, cells)
-    new implGC(field, new StandardRevealStrategy)
+    new implGC(field, new StandardRevealStrategy, DummyFileIO)
   }
 
   // MockView
@@ -61,7 +63,6 @@ class BaseViewWSTest extends AnyWordSpec {
       outputLog ::= "update"
   }
 
-  // Tests
   "BaseView" should {
 
     "block moves when in GameOverState" in {

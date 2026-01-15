@@ -8,17 +8,23 @@ import htwg.minesweeperse.controllerComponent.impl.implGC
 import htwg.minesweeperse.model.cell.Cell
 import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
 import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
+import htwg.minesweeperse.model.fileIoComponent.IFileIO
 
 class PlayingStateWSTest extends AnyWordSpec {
-
-
+  
+  private object DummyFileIO extends IFileIO {
+    override def save(field: IField, seconds: Int): Unit = ()
+    override def load(): (IField, Int) =
+      (new implFieldAdvanced(1, 1, Vector(Vector(Cell(0)))), 0)
+  }
+  
   // Hilfsfunktion
   def controllerFromCells(cells: Vector[Vector[Cell]]) =
     new implGC(
       new implFieldAdvanced(cells.length, cells.head.length, cells),
-      new StandardRevealStrategy
+      new StandardRevealStrategy,
+      DummyFileIO
     )
-
 
   // Tests
   "A PlayingState" should {

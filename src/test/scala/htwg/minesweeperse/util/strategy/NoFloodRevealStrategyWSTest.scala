@@ -21,7 +21,6 @@ class NoFloodRevealStrategyWSTest extends AnyWordSpec {
     )
 
    // Tests
-
   "A NoFloodRevealStrategy" should {
 
     "reveal all mines if a mine is clicked" in {

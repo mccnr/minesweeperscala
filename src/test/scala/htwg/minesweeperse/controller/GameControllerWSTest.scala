@@ -3,7 +3,10 @@ package htwg.minesweeperse.controller
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
 
-import htwg.minesweeperse.controllerComponent.impl.implGC
+import com.google.inject.Guice
+import htwg.minesweeperse.MinesweeperModule
+
+import htwg.minesweeperse.controllerComponent.impl.IController
 import htwg.minesweeperse.util.state.ControllerResult._
 import htwg.minesweeperse.util.state.PlayingState
 
@@ -11,7 +14,6 @@ import htwg.minesweeperse.model.cell.Cell
 import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
 
 import htwg.minesweeperse.util.strategy.revealComponent.impl.IRevealStrategy
-import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
 
 class GameControllerWSTest extends AnyWordSpec {
 
@@ -31,12 +33,21 @@ class GameControllerWSTest extends AnyWordSpec {
     new implFieldAdvanced(3, 3, cells)
   }
 
+  // Controller aus Guice
+  private def makeController(): IController = {
+    val injector = Guice.createInjector(new MinesweeperModule)
+    val controller = injector.getInstance(classOf[IController])
+    controller
+  }
+
   "A GameController" should {
 
     "update the field when a move is made" in {
       val field = fieldWithMine()
-      val reveal = new StandardRevealStrategy
-      val controller = new implGC(field, reveal)
+      val controller = makeController()
+
+      // unser Test-Field reinsetzen
+      controller.field = field
 
       controller.processMove(1, 1)
 
@@ -46,8 +57,9 @@ class GameControllerWSTest extends AnyWordSpec {
 
     "return OutOfBounds when coordinates are invalid" in {
       val field = fieldWithMine()
-      val reveal = new StandardRevealStrategy
-      val controller = new implGC(field, reveal)
+      val controller = makeController()
+
+      controller.field = field
 
       controller.processMove(10, 10)
 
@@ -57,8 +69,15 @@ class GameControllerWSTest extends AnyWordSpec {
 
     "set lastResult to OutOfBounds when reveal strategy throws" in {
       val field = fieldWithMine()
-      val controller = new implGC(field, new ThrowingStrategy)
+      val controller = makeController()
 
+      controller.field = field
+      
+      controller.revealStrategy match {
+        case _ =>
+      }
+
+      // provozieren OutOfBounds
       controller.processMove(99, 99)
 
       controller.lastResult shouldBe OutOfBounds

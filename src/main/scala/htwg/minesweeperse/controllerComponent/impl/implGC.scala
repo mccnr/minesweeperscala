@@ -1,4 +1,4 @@
-package htwg.minesweeperse.controllerComponent
+package htwg.minesweeperse.controllerComponent.impl
 
 import com.google.inject.Inject
 import htwg.minesweeperse.controllerComponent.impl.IController

@@ -15,9 +15,7 @@ class FieldCellWSTest extends AnyWordSpec {
   def fieldFromCells(cells: Vector[Vector[Cell]]): IField =
     new implFieldAdvanced(cells.length, cells.head.length, cells)
 
-  // ======================
   // Cell Tests
-  // ======================
   "A Cell" should {
 
     "have isMine = true when value == 1" in {
@@ -44,9 +42,7 @@ class FieldCellWSTest extends AnyWordSpec {
     }
   }
 
-  // ======================
   // Field Tests
-  // ======================
   "A Field" should {
 
     "count mines around a cell correctly" in {

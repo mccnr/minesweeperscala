@@ -3,7 +3,7 @@ package htwg.minesweeperse
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import htwg.minesweeperse.controllerComponent.impl.IController
-import htwg.minesweeperse.controllerComponent.implGC
+import htwg.minesweeperse.controllerComponent.impl.implGC
 import htwg.minesweeperse.model.fieldComponent.impl.IField
 import net.codingwell.scalaguice.ScalaModule
 import htwg.minesweeperse.model.fieldComponent.impl.implFieldBase

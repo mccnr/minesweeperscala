@@ -10,12 +10,18 @@ import htwg.minesweeperse.controllerComponent.impl.IController
 
 import htwg.minesweeperse.model.cell.Cell
 import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
+import htwg.minesweeperse.model.fileIoComponent.IFileIO
 
 import htwg.minesweeperse.util.command.{Move, RedoCmd, UndoCmd}
 import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
-import htwg.minesweeperse.util.state.ControllerResult
 
 class ViewWSTest extends AnyWordSpec {
+  
+  private object DummyFileIO extends IFileIO {
+    override def save(field: IField, seconds: Int): Unit = ()
+    override def load(): (IField, Int) =
+      (new implFieldAdvanced(1, 1, Vector(Vector(Cell(0)))), 0)
+  }
 
   // Hilfsfunktionen
   def emptyCell(): Cell = Cell(0)
@@ -34,7 +40,7 @@ class ViewWSTest extends AnyWordSpec {
     val out      = new PrintStream(outBytes)
 
     val controller =
-      new implGC(field, new StandardRevealStrategy)
+      new implGC(field, new StandardRevealStrategy, DummyFileIO)
 
     val view = new GameView(controller, out, in)
 
@@ -179,10 +185,10 @@ class ViewWSTest extends AnyWordSpec {
       val field = fieldFromCells(Vector(Vector(emptyCell())))
       val (view, _, _) = makeView("", field)
 
-      view.parseInput("abcd")   shouldBe None
-      view.parseInput("1 x")    shouldBe None
-      view.parseInput("1")      shouldBe None
-      view.parseInput("1 2 3")  shouldBe None
+      view.parseInput("abcd")  shouldBe None
+      view.parseInput("1 x")   shouldBe None
+      view.parseInput("1")     shouldBe None
+      view.parseInput("1 2 3") shouldBe None
     }
   }
 }

@@ -5,16 +5,20 @@ import org.scalatest.matchers.should.Matchers.*
 
 import htwg.minesweeperse.controllerComponent.impl.implGC
 import htwg.minesweeperse.model.cell.Cell
-import htwg.minesweeperse.model.fieldComponent.impl.implFieldAdvanced
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
 import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
 import htwg.minesweeperse.util.state.ControllerResult.*
+import htwg.minesweeperse.model.fileIoComponent.IFileIO
 
 class WinStateWSTest extends AnyWordSpec {
-
-  /* -----------------------------------
-   * Hilfsfunktion
-   * ----------------------------------- */
-
+  
+  private object DummyFileIO extends IFileIO {
+    override def save(field: IField, seconds: Int): Unit = ()
+    override def load(): (IField, Int) =
+      (new implFieldAdvanced(1, 1, Vector(Vector(Cell(0)))), 0)
+  }
+  
+  // Hilfsfunktionen
   def controllerWithEmptyField() =
     new implGC(
       new implFieldAdvanced(
@@ -25,13 +29,11 @@ class WinStateWSTest extends AnyWordSpec {
           Vector(Cell(0), Cell(0))
         )
       ),
-      new StandardRevealStrategy
+      new StandardRevealStrategy,
+      DummyFileIO
     )
 
-  /* -----------------------------------
-   * Tests
-   * ----------------------------------- */
-
+  // Tests
   "A WinState" should {
 
     "have the correct name" in {

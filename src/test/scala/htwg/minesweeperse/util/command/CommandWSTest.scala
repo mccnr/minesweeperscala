@@ -10,9 +10,16 @@ import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrat
 import htwg.minesweeperse.util.state._
 import htwg.minesweeperse.util.state.ControllerResult._
 
-class CommandWSTest extends AnyWordSpec {
+import htwg.minesweeperse.model.fileIoComponent.IFileIO
 
-  //Hilfsfunktionen
+class CommandWSTest extends AnyWordSpec {
+  
+  private object DummyFileIO extends IFileIO {
+    override def save(field: IField, seconds: Int): Unit = ()
+    override def load(): (IField, Int) = (field2x2Empty(), 0)
+  }
+
+  // Hilfsfunktionen
   def field2x2Empty(): IField = {
     val cells = Vector(
       Vector(Cell(0), Cell(0)),
@@ -33,7 +40,7 @@ class CommandWSTest extends AnyWordSpec {
   "A RevealCommand with Undo/Redo" should {
 
     "execute a reveal via doStep()" in {
-      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy, DummyFileIO)
 
       val cmd = new RevealCommand(controller, 0, 0)
       cmd.doStep()
@@ -42,7 +49,7 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "undo a reveal via undoStep()" in {
-      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy, DummyFileIO)
 
       val cmd = new RevealCommand(controller, 0, 0)
       cmd.doStep()
@@ -53,7 +60,7 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "redo a reveal via redoStep()" in {
-      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy, DummyFileIO)
 
       val cmd = new RevealCommand(controller, 0, 0)
       cmd.doStep()
@@ -64,7 +71,7 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "work through GameController.undo() and redo()" in {
-      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy)
+      val controller = new implGC(field2x2Empty(), new StandardRevealStrategy, DummyFileIO)
 
       controller.processMove(0, 0)
       controller.field.isRevealed(0, 0) shouldBe true
@@ -77,7 +84,7 @@ class CommandWSTest extends AnyWordSpec {
     }
 
     "allow undo after GameOver and correctly restore playability" in {
-      val controller = new implGC(fieldWithMine(), new StandardRevealStrategy)
+      val controller = new implGC(fieldWithMine(), new StandardRevealStrategy, DummyFileIO)
 
       // Mine treffen
       controller.processMove(0, 0)
