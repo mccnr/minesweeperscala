@@ -24,7 +24,7 @@ class implJSON extends IFileIO {
       value <- (json \ "value").validate[Int]
       revealed <- (json \ "revealed").validate[Boolean]
       flagged <- (json \ "flagged").validateOpt[Boolean].map(_.getOrElse(false))
-    yield Cell(value, revealed, flagged)
+    yield Cell(value, revealed, flagged) // Neue Cell
   }
 
   // FieldData Json
@@ -50,17 +50,17 @@ class implJSON extends IFileIO {
       cols <- (json \ "cols").validate[Int]
       seconds <- (json \ "seconds").validateOpt[Int].map(_.getOrElse(0))
       cells <- (json \ "cells").validate[Vector[Vector[Cell]]]
-    yield FieldData(rows, cols, seconds, cells)
+    yield FieldData(rows, cols, seconds, cells) // Neue FieldData
   }
 
   // Save
   override def save(field: IField, seconds: Int): Unit =
     field match
       case f: implFieldAdvanced =>
-        val data = FieldData(f.rows, f.cols, seconds, f.cells)
-        val json = Json.prettyPrint(Json.toJson(data)(using summon[Writes[FieldData]]))
+        val data = FieldData(f.rows, f.cols, seconds, f.cells) // Bauen FieldData daraus
+        val json = Json.prettyPrint(Json.toJson(data)(using summon[Writes[FieldData]])) // Writer und Formatierung
 
-        val pw = new PrintWriter("minesweeper.json")
+        val pw = new PrintWriter("minesweeper.json") // öffnet Datei zum schreiben
         pw.write(json)
         pw.close()
 
@@ -69,9 +69,9 @@ class implJSON extends IFileIO {
 
   // Load
   override def load(): (IField, Int) =
-    val source = Source.fromFile("minesweeper.json").getLines().mkString
-    val json = Json.parse(source)
+    val source = Source.fromFile("minesweeper.json").getLines().mkString // Liest Datei
+    val json = Json.parse(source) // Zu Json Parsen
 
     val data = json.as[FieldData](using summon[Reads[FieldData]])
-    (new implFieldAdvanced(data.rows, data.cols, data.cells), data.seconds)
+    (new implFieldAdvanced(data.rows, data.cols, data.cells), data.seconds) // Neues FieldAdv und gibt es zurück
 }

@@ -27,6 +27,5 @@ class MinesweeperModule extends AbstractModule with ScalaModule {
     bind[IFileIO].annotatedWith(Names.named("json")).toInstance((new implJSON))
     bind[IFileIO].annotatedWith(Names.named("xml")).toInstance(new implXML)
 
-    //bind[IFileIO].to[implXML]
   }
 }

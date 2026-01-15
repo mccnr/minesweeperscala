@@ -2,12 +2,10 @@ package htwg.minesweeperse.view
 
 import htwg.minesweeperse.util.state.ControllerResult.{GameOver, OutOfBounds, Revealed, Win}
 import htwg.minesweeperse.util.template.BaseView
-import htwg.minesweeperse.controllerComponent
 import htwg.minesweeperse.controllerComponent.impl.IController
 import htwg.minesweeperse.util.command.{ExitCmd, InputCommand, LoadCmd, Move, RedoCmd, RestartCmd, SaveCmd, UndoCmd}
 import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state.ControllerResult
-import com.google.inject.Inject
 
 import java.io.*
 
@@ -23,7 +21,7 @@ class GameView (
     out.println(controller.field.show())
     handleResult(controller.lastResult)*/
 
-  // Temporary Fix for duplicated outputs
+  // Fix for duplicated outputs
   private var lastShownField: String = ""
   private var lastShownResult: Option[ControllerResult] = None
 
