@@ -30,13 +30,13 @@ class GameView (
   override def update(): Unit = {
     val currentField = controller.field.show()
 
-    // Feld nur drucken wenn es sich geändert hat
+    // Feld nur ausgeben wenn es sich geändert hat
     if (currentField != lastShownField) {
       println(currentField)
       lastShownField = currentField
     }
 
-    // Result nur drucken wenn es sich geändert hat
+    // Result nur ausgeben wenn es sich geändert hat
     val currentResult = controller.lastResult
     if (!lastShownResult.contains(currentResult)) {
       handleResult(currentResult)
