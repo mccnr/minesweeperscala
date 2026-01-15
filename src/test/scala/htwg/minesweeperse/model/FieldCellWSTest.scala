@@ -31,14 +31,47 @@ class FieldCellWSTest extends AnyWordSpec {
       mineCell().display()  shouldBe "?"
     }
 
+    "display 'F' for hidden flagged cells (flag has priority over '?')" in {
+      val cell = emptyCell().toggleFlag()
+      cell.display() shouldBe "F"
+    }
+
+    "not reveal a flagged cell (reveal returns same instance)" in {
+      val flaggedCell = emptyCell().toggleFlag()
+      val revealedTry = flaggedCell.reveal()
+
+      revealedTry shouldBe flaggedCell
+      revealedTry.isRevealed shouldBe false
+      revealedTry.isFlagged shouldBe true
+    }
+
+    "not toggleFlag on an already revealed cell (toggleFlag returns same instance)" in {
+      val revealedCell = emptyCell().reveal()
+      val toggledTry   = revealedCell.toggleFlag()
+
+      toggledTry shouldBe revealedCell
+      toggledTry.isFlagged shouldBe false
+      toggledTry.isRevealed shouldBe true
+    }
+
     "display '*' for revealed mines" in {
       val cell = mineCell().reveal()
       cell.display() shouldBe "*"
     }
 
-    "display blank or number for revealed non-mine cells" in {
+    "display blank for revealed non-mine cells with minesAround=0" in {
       val cell = emptyCell().reveal()
       cell.display(Some(0)) shouldBe " "
+    }
+
+    "display number for revealed non-mine cells when minesAround is defined" in {
+      val cell = emptyCell().reveal()
+      cell.display(Some(3)) shouldBe "3"
+    }
+
+    "use default '?' when revealed non-mine cell is displayed without context" in {
+      val cell = emptyCell().reveal()
+      cell.display() shouldBe "?"
     }
   }
 
@@ -64,6 +97,21 @@ class FieldCellWSTest extends AnyWordSpec {
       revealed.isRevealed(0, 0) shouldBe true
     }
 
+    "return itself when revealing a flagged cell (field.reveal should return this)" in {
+      val field = fieldFromCells(
+        Vector(
+          Vector(emptyCell().toggleFlag())
+        )
+      )
+
+      val revealed = field.reveal(0, 0)
+
+      // reveal on flagged must do nothing
+      revealed shouldBe field
+      revealed.isRevealed(0, 0) shouldBe false
+      revealed.isFlagged(0, 0) shouldBe true
+    }
+
     "reveal a mine and mark game over condition" in {
       val field = fieldFromCells(Vector(Vector(mineCell())))
       val revealed = field.reveal(0, 0)
@@ -85,6 +133,22 @@ class FieldCellWSTest extends AnyWordSpec {
         r <- 0 until revealed.rows
         c <- 0 until revealed.cols
       } revealed.isRevealed(r, c) shouldBe true
+    }
+
+    "flood-fill should unflag flagged empty neighbors and reveal them" in {
+      // Start (0,0) reveals, floodfill touches (0,1)
+      // (0,1) ist flagged, muss unflag + revealed werden
+      val field = fieldFromCells(
+        Vector(
+          Vector(emptyCell(), emptyCell().toggleFlag()),
+          Vector(emptyCell(), emptyCell())
+        )
+      )
+
+      val revealed = field.reveal(0, 0)
+
+      revealed.isRevealed(0, 1) shouldBe true
+      revealed.isFlagged(0, 1) shouldBe false
     }
 
     "detect win when all non-mine cells are revealed" in {
@@ -126,10 +190,52 @@ class FieldCellWSTest extends AnyWordSpec {
       }
     }
 
-    "use default '?' when revealed non-mine cell is displayed without context" in {
-      val cell = emptyCell().reveal()
-      cell.display() shouldBe "?"
+    "toggleFlag should return itself when coords are out of bounds" in {
+      val field = fieldFromCells(
+        Vector(
+          Vector(emptyCell(), emptyCell()),
+          Vector(emptyCell(), emptyCell())
+        )
+      )
+
+      val after = field.toggleFlag(-1, 0)
+
+      after shouldBe field
     }
 
+    "unflagAndRevealOne should remove flag and reveal that cell" in {
+      val field = fieldFromCells(
+        Vector(
+          Vector(emptyCell().toggleFlag())
+        )
+      )
+
+      val updated = field.unflagAndRevealOne(0, 0)
+
+      updated.isFlagged(0, 0) shouldBe false
+      updated.isRevealed(0, 0) shouldBe true
+    }
+
+    "totalMines should count all mines" in {
+      val field = fieldFromCells(
+        Vector(
+          Vector(mineCell(), emptyCell()),
+          Vector(mineCell(), mineCell())
+        )
+      )
+
+      field.totalMines shouldBe 3
+    }
+
+    "totalFlags should count all flagged cells" in {
+      val field = fieldFromCells(
+        Vector(
+          Vector(emptyCell().toggleFlag(), emptyCell()),
+          Vector(emptyCell().toggleFlag(), mineCell())
+        )
+      )
+
+      field.totalFlags shouldBe 2
+    }
   }
 }

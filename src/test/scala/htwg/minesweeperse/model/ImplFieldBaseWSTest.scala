@@ -18,7 +18,7 @@ class ImplFieldBaseWSTest extends AnyWordSpec {
       field.rows shouldBe 4
       field.cols shouldBe 5
 
-      // Zugriff erzwingt Ausführung von Vector.tabulate
+      // Zugriff erzwingt Vector.tabulate
       field.isMine(0, 0) shouldBe a[Boolean]
     }
 
@@ -45,6 +45,20 @@ class ImplFieldBaseWSTest extends AnyWordSpec {
       val twice = once.reveal(0, 0)
 
       twice shouldBe once
+    }
+
+    "return itself when revealing a flagged cell (flag blocks reveal)" in {
+      val field = new implFieldBase(2, 2)
+
+      val flagged: IField = field.toggleFlag(0, 0)
+      flagged.isFlagged(0, 0) shouldBe true
+
+      val revealTry = flagged.reveal(0, 0)
+
+      // Muss genau dasselbe Objekt sein (this)
+      revealTry shouldBe flagged
+      revealTry.isRevealed(0, 0) shouldBe false
+      revealTry.isFlagged(0, 0) shouldBe true
     }
 
     "reveal all mines when a mine is revealed" in {
@@ -103,7 +117,7 @@ class ImplFieldBaseWSTest extends AnyWordSpec {
           val revealed = field.reveal(r, c)
           revealed.hasRevealedMine shouldBe true
         case None =>
-          succeed // kein Mine-Fall ist erlaubt
+          succeed
     }
 
     "detect win condition correctly" in {
@@ -172,7 +186,8 @@ class ImplFieldBaseWSTest extends AnyWordSpec {
 
     "not flood-fill into mines" in {
       val field = new implFieldAdvanced(
-        2, 2,
+        2,
+        2,
         Vector(
           Vector(Cell(0), Cell(1)),
           Vector(Cell(0), Cell(0))
@@ -182,6 +197,78 @@ class ImplFieldBaseWSTest extends AnyWordSpec {
       val revealed = field.reveal(0, 0)
 
       revealed.isRevealed(0, 1) shouldBe false
+    }
+
+    "toggleFlag should return this when coordinates are out of bounds" in {
+      val field = new implFieldBase(2, 2)
+
+      val out1 = field.toggleFlag(-1, 0)
+      out1 shouldBe field
+
+      val out2 = field.toggleFlag(0, -1)
+      out2 shouldBe field
+
+      val out3 = field.toggleFlag(2, 0)
+      out3 shouldBe field
+
+      val out4 = field.toggleFlag(0, 2)
+      out4 shouldBe field
+    }
+
+    "toggleFlag should set and unset a flag on valid coordinates (and cover isFlagged)" in {
+      val field = new implFieldBase(2, 2)
+
+      val flagged = field.toggleFlag(0, 0)
+      flagged.isFlagged(0, 0) shouldBe true
+
+      val unflagged = flagged.toggleFlag(0, 0)
+      unflagged.isFlagged(0, 0) shouldBe false
+    }
+
+    "unflagAndRevealOne should remove flag and reveal the cell (implFieldBase method!)" in {
+      val field = new implFieldBase(2, 2)
+
+      val flagged = field.toggleFlag(0, 0)
+      flagged.isFlagged(0, 0) shouldBe true
+      flagged.isRevealed(0, 0) shouldBe false
+
+      val res = flagged.unflagAndRevealOne(0, 0)
+
+      res.isFlagged(0, 0) shouldBe false
+      res.isRevealed(0, 0) shouldBe true
+    }
+
+    "totalMines and totalFlags should count correctly (implFieldBase methods!)" in {
+      val field = new implFieldBase(4, 4)
+
+      // totalMines muss ausführbar sein
+      field.totalMines should be >= 0
+
+      // totalFlags = 0 am Anfang
+      field.totalFlags shouldBe 0
+
+      // nach flaggen ist totalFlags > 0
+      val flagged = field.toggleFlag(0, 0)
+      flagged.totalFlags shouldBe 1
+    }
+
+    "show() should execute revealed non-mine branch (display(Some(countMinesAround)))" in {
+
+      val field = new implFieldBase(3, 3)
+
+      // eine sichere nicht-mine finden
+      val safePos =
+        (for
+          r <- 0 until field.rows
+          c <- 0 until field.cols
+          if !field.isMine(r, c)
+        yield (r, c)).head
+
+      val revealed = field.reveal(safePos._1, safePos._2)
+      val out = revealed.show()
+
+      out should include("|")
+      out should include("-")
     }
   }
 }

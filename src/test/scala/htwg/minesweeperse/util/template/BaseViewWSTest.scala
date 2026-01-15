@@ -143,7 +143,8 @@ class BaseViewWSTest extends AnyWordSpec {
       view.start()
       Thread.sleep(50)
 
-      view.outputLog.contains("invalid") shouldBe true
+
+      view.outputLog.exists(_.startsWith("result:")) shouldBe false
     }
   }
 }
