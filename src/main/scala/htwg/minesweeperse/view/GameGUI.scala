@@ -24,6 +24,14 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
   controller.addObserver(this)
 
+  // UI
+  private var fieldButtons: Vector[Vector[Button]] = Vector()
+
+  // Toolkit-safe UI fields (erst nach JavaFX init)
+  private var mineCounterLabel: Label = _
+  private var timerLabel: Label = _
+  private var smileyButton: Button = _
+
   // Retro Font
   private val retroFontName: String =
     try
@@ -31,16 +39,22 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       if stream == null then "Monospaced"
       else
         val loaded = Font.loadFont(stream, 16)
-        if loaded == null then "Monospaced" else loaded.getName
-    catch case _: Exception =>
-      "Monospaced"
+        if loaded == null then "Monospaced"
+        else loaded.getName
+    catch
+      case _: Exception => "Monospaced"
 
-  // UI
-  private var fieldButtons: Vector[Vector[Button]] = Vector()
+  private def retroStyle(fontSize: Int): String =
+    s"-fx-font-family: '$retroFontName'; -fx-font-size: ${fontSize}px;"
 
-  // Labels
-  private lazy val mineCounterLabel = new Label("")
-  private lazy val timerLabel = new Label("")
+  // image loader
+  private def safeImage(path: String, fallback: String = "/icons/hidden.png"): Image =
+    val stream = getClass.getResourceAsStream(path)
+    if stream != null then new Image(stream)
+    else
+      val fallbackStream = getClass.getResourceAsStream(fallback)
+      if fallbackStream != null then new Image(fallbackStream)
+      else new Image("file:")
 
   // Timer State
   private var secondsPassed: Int = 0
@@ -51,7 +65,7 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       KeyFrame(Duration(1000), onFinished = _ => {
         secondsPassed += 1
         controller.timerSeconds = secondsPassed
-        refreshTimerLabel()
+        if timerLabel != null then timerLabel.text = s"Time: $secondsPassed"
       })
     )
   }
@@ -60,19 +74,12 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
   private val windowStyle =
     "-fx-background-color: #c0c0c0;"
 
-  private val toolbarStyle =
-    "-fx-background-color: #bdbdbd;" +
-      "-fx-border-color: #808080;" +
-      "-fx-border-width: 2;" +
-      "-fx-padding: 6;"
-
-  private val gridPanelStyle =
+  private val panelStyle =
     "-fx-background-color: #bdbdbd;" +
       "-fx-border-color: #808080;" +
       "-fx-border-width: 3;" +
       "-fx-padding: 6;"
 
-  // Hidden tile
   private val tileHiddenStyle =
     "-fx-background-color: #c0c0c0;" +
       "-fx-border-color: #ffffff #808080 #808080 #ffffff;" +
@@ -81,7 +88,6 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       "-fx-background-insets: 0;" +
       "-fx-border-insets: 0;"
 
-  // Revealed tile
   private val tileRevealedStyle =
     "-fx-background-color: #d6d6d6;" +
       "-fx-border-color: #a0a0a0;" +
@@ -90,144 +96,130 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
       "-fx-background-insets: 0;" +
       "-fx-border-insets: 0;"
 
-  // Game button style
-  private def gameButtonStyle =
-    s"-fx-background-color: #c0c0c0;" +
+  private val gameButtonStyle =
+    "-fx-background-color: #c0c0c0;" +
       "-fx-border-color: #ffffff #808080 #808080 #ffffff;" +
       "-fx-border-width: 2;" +
-      s"-fx-font-family: '$retroFontName';" +
-      "-fx-font-size: 14px;" +
-      "-fx-font-weight: bold;" +
-      "-fx-padding: 6 12 6 12;"
+      "-fx-padding: 6 12 6 12;" +
+      "-fx-background-insets: 0;" +
+      "-fx-border-insets: 0;" +
+      retroStyle(16)
 
-  private def gameButtonPressedStyle =
-    s"-fx-background-color: #c0c0c0;" +
-      "-fx-border-color: #808080 #ffffff #ffffff #808080;" +
-      "-fx-border-width: 2;" +
-      s"-fx-font-family: '$retroFontName';" +
-      "-fx-font-size: 14px;" +
-      "-fx-font-weight: bold;" +
-      "-fx-padding: 7 11 5 13;"
-
-  private def styleAsGameButton(btn: Button): Unit =
-    btn.style = gameButtonStyle
-    btn.font = Font.font(retroFontName, 14)
-
-    btn.onMousePressed = _ => btn.style = gameButtonPressedStyle
-    btn.onMouseReleased = _ => btn.style = gameButtonStyle
-
-  private def styleAsRetroLabel(lbl: Label): Unit =
-    lbl.font = Font.font(retroFontName, 16)
-    lbl.style = "-fx-font-weight: bold;"
-
-  // Mine Counter + Timer Counter UI
+  // Mine Counter + Time Counter
   private def refreshMineCounter(): Unit =
     val minesLeft = controller.field.totalMines - controller.field.totalFlags
     mineCounterLabel.text = s"Mines: $minesLeft"
 
   private def refreshTimerLabel(): Unit =
-    timerLabel.text = s"Time: ${controller.timerSeconds}"
-
-  // Start
-  override def start(): Unit =
     secondsPassed = controller.timerSeconds
+    timerLabel.text = s"Time: $secondsPassed"
+
+  private def resetTimer(): Unit =
+    secondsPassed = 0
+    controller.timerSeconds = 0
+    timerLabel.text = "Time: 0"
+    timer.play()
+
+  // Smiley Graphics
+  private def smileyGraphic(): ImageView =
+    val path =
+      controller.state match
+        case _: GameOverState => "/icons/smiley_sad.png"
+        case _: WinState => "/icons/smiley_happy.png"
+        case _ => "/icons/smiley_normal.png"
+
+    new ImageView(safeImage(path)) {
+      fitWidth = 28
+      fitHeight = 28
+      preserveRatio = true
+    }
+
+  // Cell Graphics
+  private def cellGraphic(r: Int, c: Int): ImageView =
+    val field = controller.field
+
+    val path =
+      if field.isFlagged(r, c) && !field.isRevealed(r, c) then "/icons/flag.png"
+      else if !field.isRevealed(r, c) then "/icons/hidden.png"
+      else if field.isMine(r, c) then "/icons/mine.png"
+      else
+        val count = field.countMinesAround(r, c)
+        s"/icons/n$count.png"
+
+    new ImageView(safeImage(path)) {
+      fitWidth = 28
+      fitHeight = 28
+      preserveRatio = true
+    }
+
+  // Root Builder
+  private def buildRoot(): VBox =
+    new VBox:
+      alignment = Pos.TopLeft
+      spacing = 8
+      padding = Insets(10)
+      style = windowStyle
+      children = Seq(
+        buildTopBar(),
+        buildGrid(),
+        buildBottomBar()
+      )
+
+  // Top Bar
+  private def buildTopBar(): VBox =
+    if mineCounterLabel == null then mineCounterLabel = new Label("")
+    if timerLabel == null then timerLabel = new Label("")
+
+    mineCounterLabel.style = retroStyle(18) + "-fx-font-weight: bold;"
+    timerLabel.style = retroStyle(18) + "-fx-font-weight: bold;"
+
     refreshMineCounter()
     refreshTimerLabel()
 
-    stage = new PrimaryStage:
-      title = "Minesweeper in Scala"
-      scene = new Scene:
-        root = buildRoot()
+    val infoRow = new HBox:
+      spacing = 20
+      alignment = Pos.CenterLeft
+      children = Seq(mineCounterLabel, timerLabel)
 
-    timer.play()
+    val saveBtn = new Button("Save"):
+      style = gameButtonStyle
+      onAction = _ => controller.save()
 
-  private def buildRoot(): VBox =
-    new VBox:
+    val loadBtn = new Button("Load"):
+      style = gameButtonStyle
+      onAction = _ =>
+        controller.load()
+        refreshTimerLabel()
+        refreshMineCounter()
+
+    // new Smiley Button
+    smileyButton = new Button:
+      minWidth = 40
+      minHeight = 40
+      style = tileHiddenStyle
+      graphic = smileyGraphic()
+      onAction = _ =>
+        controller.restart()
+        resetTimer()
+        refreshMineCounter()
+
+    val buttonsRow = new HBox:
       spacing = 10
-      padding = Insets(10)
-      style = windowStyle
-      alignment = Pos.TopCenter
-      children = Seq(
-        buildTopPanel(),
-        buildGrid(),
-        buildBottomPanel()
-      )
+      alignment = Pos.CenterLeft
+      children = Seq(saveBtn, smileyButton, loadBtn)
 
-  // Top Panel
-  private def buildTopPanel(): VBox =
     new VBox:
       spacing = 6
-      alignment = Pos.Center
-
-      val row1 = new HBox:
-        spacing = 8
-        alignment = Pos.Center
-        style = toolbarStyle
-
-        val saveBtn = new Button("Save"):
-          minWidth = 90
-          onAction = _ => controller.save()
-
-        val loadBtn = new Button("Load"):
-          minWidth = 90
-          onAction = _ => controller.load()
-
-        styleAsGameButton(saveBtn)
-        styleAsGameButton(loadBtn)
-
-        children = Seq(saveBtn, loadBtn)
-
-      val row2 = new HBox:
-        spacing = 20
-        alignment = Pos.Center
-        style = toolbarStyle
-
-        styleAsRetroLabel(mineCounterLabel)
-        styleAsRetroLabel(timerLabel)
-
-        children = Seq(mineCounterLabel, timerLabel)
-
-      children = Seq(row1, row2)
-
-  // Bottom Panel
-  private def buildBottomPanel(): HBox =
-    new HBox:
-      spacing = 8
-      alignment = Pos.Center
-      style = toolbarStyle
-
-      val undoBtn = new Button("Undo"):
-        minWidth = 90
-        onAction = _ => controller.undo()
-
-      val redoBtn = new Button("Redo"):
-        minWidth = 90
-        onAction = _ => controller.redo()
-
-      val restartBtn = new Button("Restart"):
-        minWidth = 90
-        onAction = _ =>
-          controller.restart()
-          secondsPassed = 0
-          controller.timerSeconds = 0
-          refreshTimerLabel()
-          refreshMineCounter()
-          timer.play()
-
-      styleAsGameButton(undoBtn)
-      styleAsGameButton(redoBtn)
-      styleAsGameButton(restartBtn)
-
-      children = Seq(undoBtn, redoBtn, restartBtn)
+      style = panelStyle
+      children = Seq(infoRow, buttonsRow)
 
   // Grid
   private def buildGrid(): GridPane =
     val gp = new GridPane:
-      padding = Insets(6)
       hgap = 0
       vgap = 0
-      style = gridPanelStyle
-      alignment = Pos.Center
+      style = panelStyle
+      alignment = Pos.CenterLeft
 
     fieldButtons =
       (0 until controller.field.rows).map { r =>
@@ -261,42 +253,55 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
 
     gp
 
-  // Cell Graphics
-  private def cellGraphic(r: Int, c: Int): ImageView =
-    val field = controller.field
+  // Bottom Bar
+  private def buildBottomBar(): HBox =
+    val undoBtn = new Button("Undo"):
+      style = gameButtonStyle
+      onAction = _ => controller.undo()
 
-    val img =
-      if field.isFlagged(r, c) && !field.isRevealed(r, c) then
-        new Image("icons/flag.png")
-      else if !field.isRevealed(r, c) then
-        new Image("icons/hidden.png")
-      else if field.isMine(r, c) then
-        new Image("icons/mine.png")
-      else
-        val count = field.countMinesAround(r, c)
-        new Image(s"icons/n$count.png")
+    val redoBtn = new Button("Redo"):
+      style = gameButtonStyle
+      onAction = _ => controller.redo()
 
-    new ImageView(img) {
-      fitWidth = 28
-      fitHeight = 28
-      preserveRatio = true
-    }
+    val exitBtn = new Button("Exit"):
+      style = gameButtonStyle
+      onAction = _ => {
+        Platform.exit()
+      }
+
+    new HBox:
+      spacing = 10
+      alignment = Pos.CenterLeft
+      style = panelStyle
+      children = Seq(undoBtn, redoBtn, exitBtn)
+
+  // Start
+  override def start(): Unit =
+    stage = new PrimaryStage:
+      title = "Minesweeper in Scala"
+      icons += safeImage("/icons/app_icon.png")
+
+      scene = new Scene:
+        root = buildRoot()
+
+    timer.play()
 
   // Observer Update
   override def update(): Unit =
     Platform.runLater {
 
-      // stop timer on win/gameover
       controller.state match
         case _: GameOverState | _: WinState =>
           timer.stop()
         case _ =>
           timer.play()
 
-      refreshMineCounter()
-      refreshTimerLabel()
+      if mineCounterLabel != null then refreshMineCounter()
+      if timerLabel != null then refreshTimerLabel()
 
-      // rebuild UI if size changed
+      if smileyButton != null then
+        smileyButton.graphic = smileyGraphic()
+
       if fieldButtons.isEmpty ||
         fieldButtons.length != controller.field.rows ||
         fieldButtons.head.length != controller.field.cols

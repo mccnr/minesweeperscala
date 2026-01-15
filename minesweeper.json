@@ -1,109 +1,13 @@
 {
   "rows" : 8,
   "cols" : 8,
-  "seconds" : 27,
+  "seconds" : 5,
   "cells" : [ [ {
     "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
     "revealed" : false,
     "flagged" : false
   }, {
     "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : true
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 1,
-    "revealed" : false,
-    "flagged" : false
-  } ], [ {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 1,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 1,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : true
-  }, {
-    "value" : 1,
-    "revealed" : false,
-    "flagged" : true
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : false
-  } ], [ {
-    "value" : 1,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 1,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : true
-  }, {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : false
-  } ], [ {
-    "value" : 0,
-    "revealed" : false,
-    "flagged" : false
-  }, {
-    "value" : 1,
     "revealed" : false,
     "flagged" : false
   }, {
@@ -115,13 +19,13 @@
     "revealed" : false,
     "flagged" : false
   }, {
-    "value" : 0,
-    "revealed" : true,
+    "value" : 1,
+    "revealed" : false,
     "flagged" : false
   }, {
     "value" : 0,
     "revealed" : false,
-    "flagged" : true
+    "flagged" : false
   }, {
     "value" : 0,
     "revealed" : false,
@@ -132,7 +36,43 @@
     "flagged" : false
   } ], [ {
     "value" : 0,
-    "revealed" : true,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 1,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 1,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  } ], [ {
+    "value" : 1,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
     "flagged" : false
   }, {
     "value" : 0,
@@ -158,40 +98,68 @@
     "value" : 1,
     "revealed" : false,
     "flagged" : false
+  } ], [ {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 1,
+    "revealed" : false,
+    "flagged" : false
   }, {
     "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 1,
     "revealed" : false,
     "flagged" : false
   } ], [ {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
+    "value" : 1,
     "revealed" : false,
-    "flagged" : true
+    "flagged" : false
   }, {
     "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 1,
     "revealed" : false,
     "flagged" : false
   } ], [ {
@@ -215,15 +183,15 @@
     "revealed" : true,
     "flagged" : false
   }, {
-    "value" : 0,
-    "revealed" : true,
-    "flagged" : false
-  }, {
-    "value" : 0,
+    "value" : 1,
     "revealed" : false,
     "flagged" : false
   }, {
     "value" : 1,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
     "revealed" : false,
     "flagged" : false
   } ], [ {
@@ -244,6 +212,38 @@
     "flagged" : false
   }, {
     "value" : 1,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : false,
+    "flagged" : false
+  } ], [ {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
+    "revealed" : true,
+    "flagged" : false
+  }, {
+    "value" : 0,
     "revealed" : false,
     "flagged" : false
   }, {
