@@ -72,6 +72,7 @@ class implGC @Inject() (
       lastResult = ControllerResult.GameOver
 
     else if field.isWin then
+      autoFlagAllMines()
       state = WinState()
       lastResult = ControllerResult.Win
 
@@ -81,11 +82,12 @@ class implGC @Inject() (
 
     notifyObservers()
 
-  override def syncStateWithField(): Unit = //TEST
+  override def syncStateWithField(): Unit =
     if field.hasRevealedMine then
       state = GameOverState()
       lastResult = ControllerResult.GameOver
     else if field.isWin then
+      autoFlagAllMines()
       state = WinState()
       lastResult = ControllerResult.Win
     else
@@ -120,4 +122,10 @@ class implGC @Inject() (
     // Timer reset
     timerSeconds = 0
     notifyObservers()
+
+  override def autoFlagAllMines(): Unit =
+    for r <- 0 until field.rows do
+      for c <- 0 until field.cols do
+        if field.isMine(r, c) && !field.isFlagged(r, c) then
+          field = field.toggleFlag(r, c)
 }

@@ -42,6 +42,9 @@ trait IController:
   // Reset
   def restart(): Unit
 
+  // Win State erreicht
+  def autoFlagAllMines(): Unit
+
 
 
 
