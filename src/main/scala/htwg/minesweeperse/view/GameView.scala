@@ -16,11 +16,7 @@ class GameView (
    ) extends BaseView(controller), Observer:
 
   controller.addObserver(this)
-
-   /*override def update(): Unit =
-    out.println(controller.field.show())
-    handleResult(controller.lastResult)*/
-
+  
   // Fix for duplicated outputs
   private var lastShownField: String = ""
   private var lastShownResult: Option[ControllerResult] = None

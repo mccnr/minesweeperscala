@@ -1,14 +1,13 @@
-package htwg.minesweeperse.model
+package htwg.minesweeperse.model.fileIo
 
-import org.scalatest.wordspec.AnyWordSpec
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
+import htwg.minesweeperse.model.fileIoComponent.fileXmlImpl.implXML
 import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.AnyWordSpec
 
 import java.io.File
 import scala.util.Try
-
-import htwg.minesweeperse.model.fileIoComponent.fileXmlImpl.implXML
-import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
-import htwg.minesweeperse.model.cell.Cell
 
 class ImplXmlWSTest extends AnyWordSpec {
 

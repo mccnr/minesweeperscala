@@ -1,12 +1,9 @@
-package htwg.minesweeperse.model
+package htwg.minesweeperse.model.fieldCell
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers.*
-
-import htwg.minesweeperse.model.fieldComponent.impl.implFieldBase
-import htwg.minesweeperse.model.fieldComponent.impl.implFieldAdvanced
-import htwg.minesweeperse.model.fieldComponent.impl.IField
 import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced, implFieldBase}
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.AnyWordSpec
 
 class ImplFieldBaseWSTest extends AnyWordSpec {
 

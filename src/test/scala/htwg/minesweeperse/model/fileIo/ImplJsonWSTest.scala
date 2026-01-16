@@ -1,16 +1,14 @@
-package htwg.minesweeperse.model
+package htwg.minesweeperse.model.fileIo
 
-import org.scalatest.wordspec.AnyWordSpec
+import htwg.minesweeperse.model.cell.Cell
+import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced, implFieldBase}
+import htwg.minesweeperse.model.fileIoComponent.fileJsonImpl.implJSON
 import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.*
 
 import java.io.File
 import java.nio.file.Files
-
-import htwg.minesweeperse.model.fileIoComponent.fileJsonImpl.implJSON
-import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced, implFieldBase}
-import htwg.minesweeperse.model.cell.Cell
-
-import play.api.libs.json.*
 
 class ImplJsonWSTest extends AnyWordSpec {
 
