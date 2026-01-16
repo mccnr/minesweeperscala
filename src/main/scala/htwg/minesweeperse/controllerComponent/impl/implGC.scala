@@ -16,7 +16,7 @@ import scala.util.{Failure, Success, Try}
 class implGC @Inject() (
    @Named("medium") private var _field: IField,
    @Named("standard") private val _revealStrategy: IRevealStrategy,
-   @Named("xml") private val fileIO: IFileIO // File IO
+   @Named("json") private val fileIO: IFileIO // File IO
   ) extends Observable, IController {
 
   private val undoManager = UndoManager()
