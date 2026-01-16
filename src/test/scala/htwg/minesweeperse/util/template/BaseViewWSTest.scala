@@ -60,6 +60,7 @@ class BaseViewWSTest extends AnyWordSpec {
 
     override def syncStateWithField(): Unit = inner.syncStateWithField()
     override def changeState(state: GameState): Unit = inner.changeState(state)
+    override def autoFlagAllMines(): Unit = inner.autoFlagAllMines()
 
     override def save(): Unit = {
       saveCalled = true
