@@ -27,7 +27,6 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
   // UI
   private var fieldButtons: Vector[Vector[Button]] = Vector()
 
-  // Toolkit-safe UI fields (erst nach JavaFX init)
   private var mineCounterLabel: Label = _
   private var timerLabel: Label = _
   private var smileyButton: Button = _
