@@ -3,7 +3,6 @@ package htwg.minesweeperse.view
 import htwg.minesweeperse.controllerComponent.impl.IController
 import htwg.minesweeperse.util.observer.Observer
 import htwg.minesweeperse.util.state._
-
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.Platform
@@ -15,7 +14,7 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.input.MouseButton
 import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
 import scalafx.scene.layout.{GridPane, HBox, VBox}
-
+import scala. compiletime. uninitialized
 import scalafx.animation.{KeyFrame, Timeline}
 import scalafx.util.Duration
 import scalafx.scene.text.Font
@@ -27,9 +26,9 @@ class GameGUI(controller: IController) extends JFXApp3 with Observer:
   // UI
   private var fieldButtons: Vector[Vector[Button]] = Vector()
 
-  private var mineCounterLabel: Label = _
-  private var timerLabel: Label = _
-  private var smileyButton: Button = _
+  private var mineCounterLabel: Label = uninitialized
+  private var timerLabel: Label = uninitialized
+  private var smileyButton: Button = uninitialized
 
   // Retro Font
   private val retroFontName: String =
