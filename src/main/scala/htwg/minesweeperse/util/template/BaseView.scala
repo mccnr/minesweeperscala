@@ -1,7 +1,7 @@
 package htwg.minesweeperse.util.template
 
 import htwg.minesweeperse.controllerComponent.impl.IController
-import htwg.minesweeperse.util.command.{ExitCmd, InputCommand, InvalidCmd, LoadCmd, Move, RedoCmd, SaveCmd, UndoCmd, RestartCmd}
+import htwg.minesweeperse.util.command.*
 import htwg.minesweeperse.util.state.{ControllerResult, GameOverState, PlayingState, WinState}
 import scalafx.application.Platform
 
@@ -10,19 +10,30 @@ abstract class BaseView(controller: IController):
   final def start(): Unit =
     showWelcome()
     showField()
-    startInputThread()
-  
-  private def startInputThread(): Unit =
-    new Thread(() =>
+
+    val inputThread = startInputThread()
+
+
+    // Docker Funktionalität gewährleisten
+    if blockOnInputThread then
+      inputThread.join()
+
+  private def startInputThread(): Thread =
+    val t = new Thread(() =>
       while PlayingState().playing do
         val raw = readInput()
-        if raw.trim.isEmpty then
+
+        if raw == null then
+          PlayingState().playing = false
+        else if raw.trim.isEmpty then
           PlayingState().playing = false
         else
           handleInput(raw)
-    ).start()
+    )
 
-  // Verarbeitet einen eingegebenen Befehl
+    t.start()
+    t
+
   private def handleInput(raw: String): Unit =
     parseInput(raw) match
       case None =>
@@ -35,7 +46,7 @@ abstract class BaseView(controller: IController):
         showField()
 
       case Some(Move(r, c)) =>
-        val res = controller.processMove(r, c)
+        controller.processMove(r, c)
 
       case Some(UndoCmd) =>
         controller.undo()
@@ -53,12 +64,11 @@ abstract class BaseView(controller: IController):
         handleInvalidInput(raw)
 
       case Some(ExitCmd) =>
+        PlayingState().playing = false
         Platform.exit()
 
       case Some(RestartCmd) =>
         controller.restart()
-        //resetTimer()
-        //refreshMineCounter()
 
   // Schritte
   def showWelcome(): Unit
@@ -68,3 +78,4 @@ abstract class BaseView(controller: IController):
   def handleInvalidInput(s: String): Unit
   def handleResult(result: ControllerResult): Unit
   def update(): Unit
+  def blockOnInputThread: Boolean = true

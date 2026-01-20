@@ -46,9 +46,8 @@ class GameView (
 
   override def readInput(): String =
     out.print("Gib eine valide Koordinate ein (Z S): ")
-    Option(in.readLine())
-      .map(_.trim) // trims non-null input
-      .getOrElse("")
+    in.readLine()
+
 
   override def parseInput(s: String): Option[InputCommand] =
     s.trim.toLowerCase match

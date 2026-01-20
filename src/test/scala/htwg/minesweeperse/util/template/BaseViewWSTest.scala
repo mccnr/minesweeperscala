@@ -2,17 +2,15 @@ package htwg.minesweeperse.util.template
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
-
 import htwg.minesweeperse.controllerComponent.impl.IController
 import htwg.minesweeperse.controllerComponent.impl.implGC
-
 import htwg.minesweeperse.model.cell.Cell
 import htwg.minesweeperse.model.fieldComponent.impl.{IField, implFieldAdvanced}
 import htwg.minesweeperse.model.fileIoComponent.IFileIO
-
 import htwg.minesweeperse.util.command.*
 import htwg.minesweeperse.util.state.*
 import htwg.minesweeperse.util.strategy.revealComponent.impl.StandardRevealStrategy
+import htwg.minesweeperse.util.template._
 
 class BaseViewWSTest extends AnyWordSpec {
 
@@ -37,7 +35,6 @@ class BaseViewWSTest extends AnyWordSpec {
     var loadCalled: Boolean = false
     var restartCalled: Boolean = false
 
-    // Delegation (alles weiterreichen)
     override def field: IField = inner.field
     override def field_=(f: IField): Unit = inner.field = f
 
@@ -92,11 +89,10 @@ class BaseViewWSTest extends AnyWordSpec {
   class MockView(controller: IController, inputs: List[String])
     extends BaseView(controller) {
 
+    override def blockOnInputThread: Boolean = false
+
     private var inputQueue = inputs
     var outputLog: List[String] = Nil
-
-    // Exit in Tests NICHT wirklich Platform.exit() callen!
-    var exitCalled: Boolean = false
 
     override def showWelcome(): Unit =
       outputLog ::= "welcome"
@@ -130,13 +126,14 @@ class BaseViewWSTest extends AnyWordSpec {
 
     override def update(): Unit =
       outputLog ::= "update"
-
   }
 
-   // Tests
+  // Tests
   "BaseView" should {
 
     "block moves when in GameOverState" in {
+      PlayingState().playing = true
+
       val controller = dummyController()
       controller.state = GameOverState()
 
@@ -148,6 +145,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "block moves when in WinState" in {
+      PlayingState().playing = true
+
       val controller = dummyController()
       controller.state = WinState()
 
@@ -159,6 +158,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "execute UndoCmd" in {
+      PlayingState().playing = true
+
       val controller = dummyController()
       controller.processMove(0, 0)
       val before = controller.field
@@ -171,6 +172,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "execute RedoCmd" in {
+      PlayingState().playing = true
+
       val controller = dummyController()
       controller.processMove(0, 0)
       controller.undo()
@@ -184,6 +187,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "handle invalid input" in {
+      PlayingState().playing = true
+
       val controller = dummyController()
       val view = new MockView(controller, List("invalid", ""))
 
@@ -194,6 +199,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "execute a Move command" in {
+      PlayingState().playing = true
+
       val controller = dummyController()
       val view = new MockView(controller, List("m", ""))
 
@@ -204,6 +211,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "handle InvalidCmd explicitly" in {
+      PlayingState().playing = true
+
       val controller = dummyController()
 
       val view = new MockView(controller, List("bad", "")) {
@@ -218,6 +227,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "execute SaveCmd (controller.save) from BaseView loop" in {
+      PlayingState().playing = true
+
       val spy = new SpyController(dummyController())
 
       val view = new MockView(spy, List("save", ""))
@@ -228,6 +239,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "execute LoadCmd (controller.load) from BaseView loop" in {
+      PlayingState().playing = true
+
       val spy = new SpyController(dummyController())
 
       val view = new MockView(spy, List("load", ""))
@@ -238,6 +251,8 @@ class BaseViewWSTest extends AnyWordSpec {
     }
 
     "execute RestartCmd (controller.restart) from BaseView loop" in {
+      PlayingState().playing = true
+
       val spy = new SpyController(dummyController())
 
       val view = new MockView(spy, List("restart", ""))
