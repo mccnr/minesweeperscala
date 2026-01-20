@@ -1,7 +1,7 @@
 FROM hseeberger/scala-sbt:graalvm-ce-21.3.0-java17_1.6.2_3.1.1
 
 WORKDIR /minesweeperse
-ADD . /minesweeperse
+COPY . /minesweeperse
 
 RUN apt-get update && apt-get install -y \
     libx11-6 \
