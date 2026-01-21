@@ -70,7 +70,7 @@ abstract class BaseView(controller: IController):
       case Some(RestartCmd) =>
         controller.restart()
 
-  // Schritte
+  // Steps
   def showWelcome(): Unit
   def showField(): Unit
   def readInput(): String

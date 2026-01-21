@@ -7,7 +7,7 @@ class UndoManager:
   def doStep(command: Command): Unit =
     undoStack = command :: undoStack
     command.doStep()
-    redoStack = Nil  // nach neuem Schritt kein Redo mehr
+    redoStack = Nil
 
   def undo(): Unit =
     undoStack match

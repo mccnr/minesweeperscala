@@ -23,7 +23,7 @@ class PlayingState extends GameState:
     controller.notifyObservers()
 
     // Mine?
-    if newField.hasRevealedMine /*newField.cells.flatten.exists(c => c.isMine && c.revealed)*/ then
+    if newField.hasRevealedMine then
       controller.lastResult = GameOver
       controller.changeState(new GameOverState)
       controller.state.processMove(r, c, controller) // logik des aktuellen states zu ende verarbeiten
