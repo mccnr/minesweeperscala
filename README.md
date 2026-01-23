@@ -1,4 +1,4 @@
-# minesweeperscala
+# Minesweeper in Scala
 
 ![Build](https://github.com/mccnr/minesweeperscala/actions/workflows/scala.yml/badge.svg)
 
